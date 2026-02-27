@@ -14,7 +14,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Prompt', sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding-bottom: 50px; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding-bottom: 30px; }
         
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         .login-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 100%; max-width: 500px; text-align: center; }
@@ -45,13 +45,17 @@
 
         .btn-add-data, .btn-set-target { display: none; }
         
-        /* สไตล์พิเศษสำหรับหน้าคู่มือ */
         .ic-guideline-box { border-left: 5px solid #667eea; background: #f8f9fa; padding: 15px 20px; border-radius: 0 10px 10px 0; margin-bottom: 15px; }
         .ic-title { color: #4f46e5; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; }
         .ic-formula { background: #e0e7ff; padding: 8px 15px; border-radius: 8px; font-family: monospace; font-size: 1rem; color: #333; margin: 10px 0; border: 1px dashed #667eea; }
         .ic-criteria { font-size: 0.95rem; color: #555; }
         .ic-criteria ul { padding-left: 20px; margin-bottom: 0; }
         .ic-criteria li { margin-bottom: 5px; }
+        
+        /* สไตล์สำหรับเครดิต */
+        .credit-footer { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
+        .credit-footer a { color: white; text-decoration: none; font-weight: 600; transition: opacity 0.3s; }
+        .credit-footer a:hover { opacity: 0.8; text-decoration: underline; }
 
         @media print {
             body { background: white; padding: 0; }
@@ -114,6 +118,10 @@
                 <input type="password" class="form-control form-control-custom" id="inputPassword" required placeholder="ใส่รหัสผ่าน 1234">
             </div>
             <button type="submit" class="btn btn-custom w-100 py-2 fs-5">เข้าสู่ระบบ</button>
+            
+            <div class="mt-4 pt-3 border-top text-muted small">
+                <i class="fas fa-code me-1"></i> Developed by <strong>พี่ที</strong> | <a href="https://oyadata.com" target="_blank" class="text-decoration-none text-muted">oyadata.com</a>
+            </div>
         </form>
     </div>
 </div>
@@ -138,10 +146,18 @@
 
         <div class="tab-content" id="mainTabContent">
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                <div class="d-flex justify-content-end mb-3 gap-2 no-print">
-                    <button class="btn btn-outline-custom" onclick="window.print()"><i class="fas fa-print me-2"></i>ปริ้นท์รายงาน</button>
-                    <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
+                
+                <div class="d-flex justify-content-between align-items-end mb-3 no-print filter-section">
+                    <div style="min-width: 200px;">
+                        <label class="form-label text-muted mb-1 small fw-bold">เลือกปีเพื่อดูภาพรวมกราฟ</label>
+                        <select class="form-select form-select-custom w-100" id="dashboardYearFilter" onchange="updateDashboard()"></select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-custom" onclick="window.print()"><i class="fas fa-print me-2"></i>ปริ้นท์รายงาน</button>
+                        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
+                    </div>
                 </div>
+
                 <div id="pdfExportArea" class="bg-white p-4" style="border-radius: 15px;">
                     <div class="text-center mb-4 d-none d-print-block" id="pdfHeader" style="display: none;">
                         <h2 class="fw-bold text-dark">รายงานอัตราการติดเชื้อในโรงพยาบาล (Control Chart)</h2>
@@ -278,7 +294,7 @@
                             <div class="card-body ic-criteria">
                                 <h6 class="fw-bold text-primary mb-2">บทบาทและสิทธิ์การใช้งาน:</h6>
                                 <ul>
-                                    <li><strong>พยาบาลประจำหอผู้ป่วย:</strong> มีหน้าที่บันทึกจำนวน Denominator (เช่น จำนวนวันค้างสาย) และ Numerator (จำนวนเคสติดเชื้อ) ในแต่ละเดือน ระบบจะคำนวณ Rate ให้อัตโนมัติ</li>
+                                    <li><strong>พยาบาลประจำหอผู้ป่วย:</strong> มีหน้าที่บันทึกจำนวน Denominator และ Numerator ในแต่ละเดือน ระบบจะคำนวณ Rate ให้อัตโนมัติ</li>
                                     <li><strong>Admin กลาง (ICN):</strong> มีหน้าที่ตั้ง Target เปรียบเทียบ และสามารถดูภาพรวมผลรวมของทั้งโรงพยาบาลได้</li>
                                 </ul>
                                 <hr>
@@ -299,93 +315,47 @@
                                 <i class="fas fa-book-medical me-2"></i>เกณฑ์วินิจฉัยและสูตรคำนวณ (อิงมาตรฐาน HA / CDC NHSN)
                             </div>
                             <div class="card-body">
-                                
                                 <div class="ic-guideline-box">
                                     <div class="ic-title"><i class="fas fa-lungs me-2"></i>VAP (Ventilator-Associated Pneumonia)</div>
-                                    <div class="ic-formula text-center">
-                                        <strong>Rate</strong> = (จำนวนผู้ป่วย VAP / จำนวนวันค้างท่อช่วยหายใจ) × 1,000
-                                    </div>
-                                    <div class="ic-criteria">
-                                        <strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong>
-                                        <ul>
-                                            <li>ผู้ป่วยเกิดภาวะปอดอักเสบ หลังจากใส่ท่อช่วยหายใจ (ET tube / Tracheostomy) <strong>ไปแล้วเกิน 48 ชั่วโมง</strong> (Day 1 คือวันที่ใส่ท่อ)</li>
-                                            <li>Denominator (ตัวหาร): ให้นับ "จำนวนวัน" ที่ผู้ป่วยใส่ท่อช่วยหายใจรวมกันทุกคนในวอร์ดในเดือนนั้น</li>
-                                        </ul>
-                                    </div>
+                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย VAP / จำนวนวันค้างท่อช่วยหายใจ) × 1,000</div>
+                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยเกิดภาวะปอดอักเสบ หลังจากใส่ท่อช่วยหายใจไปแล้วเกิน 48 ชั่วโมง</li><li>Denominator: นับ "จำนวนวัน" ที่ผู้ป่วยใส่ท่อช่วยหายใจรวมกันทุกคนในวอร์ดในเดือนนั้น</li></ul></div>
                                 </div>
-
                                 <div class="ic-guideline-box" style="border-left-color: #f093fb;">
                                     <div class="ic-title" style="color: #f093fb;"><i class="fas fa-procedures me-2"></i>CA-UTI (Catheter-Associated Urinary Tract Infection)</div>
-                                    <div class="ic-formula text-center">
-                                        <strong>Rate</strong> = (จำนวนผู้ป่วย CA-UTI / จำนวนวันค้างสายสวนปัสสาวะ) × 1,000
-                                    </div>
-                                    <div class="ic-criteria">
-                                        <strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong>
-                                        <ul>
-                                            <li>ผู้ป่วยติดเชื้อในระบบทางเดินปัสสาวะ โดยมีการค้างสายสวนปัสสาวะ (Indwelling urinary catheter) <strong>ไว้เกิน 2 วันปฏิทิน</strong> (Day 1 คือวันที่ค้างสาย) และสายยังคงอยู่ ณ วันที่เกิดเหตุการณ์ หรือถอดออกไปแล้วไม่เกิน 1 วัน</li>
-                                            <li>ต้องมีอาการทางคลินิก (เช่น ไข้ > 38°C, ปวดหน่วงท้องน้อย) ร่วมกับผลเพาะเชื้อปัสสาวะบวก</li>
-                                        </ul>
-                                    </div>
+                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย CA-UTI / จำนวนวันค้างสายสวนปัสสาวะ) × 1,000</div>
+                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยติดเชื้อในระบบทางเดินปัสสาวะ โดยมีการค้างสายสวนปัสสาวะไว้เกิน 2 วันปฏิทิน</li><li>ต้องมีอาการทางคลินิกร่วมกับผลเพาะเชื้อปัสสาวะบวก</li></ul></div>
                                 </div>
-
                                 <div class="ic-guideline-box" style="border-left-color: #4facfe;">
                                     <div class="ic-title" style="color: #4facfe;"><i class="fas fa-heartbeat me-2"></i>CA-BSI / CLABSI (Central Line-Associated Bloodstream Infection)</div>
-                                    <div class="ic-formula text-center">
-                                        <strong>Rate</strong> = (จำนวนผู้ป่วย CA-BSI / จำนวนวันค้างสายสวนหลอดเลือดดำส่วนกลาง) × 1,000
-                                    </div>
-                                    <div class="ic-criteria">
-                                        <strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong>
-                                        <ul>
-                                            <li>ผู้ป่วยติดเชื้อในกระแสเลือดปฐมภูมิ (Primary BSI) ที่ได้รับการค้างสายสวนหลอดเลือดดำส่วนกลาง (Central line) <strong>ไว้เกิน 2 วันปฏิทิน</strong></li>
-                                            <li>เชื้อที่พบในเลือดต้องไม่สัมพันธ์กับการติดเชื้อที่ตำแหน่งอื่นของร่างกาย (เช่น ไม่ใช่ติดเชื้อจากปอดแล้วลามเข้าเลือด)</li>
-                                        </ul>
-                                    </div>
+                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย CA-BSI / จำนวนวันค้างสายสวนหลอดเลือดดำส่วนกลาง) × 1,000</div>
+                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยติดเชื้อในกระแสเลือดปฐมภูมิ ที่ได้รับการค้างสายสวนหลอดเลือดดำส่วนกลางไว้เกิน 2 วันปฏิทิน</li></ul></div>
                                 </div>
-
                                 <div class="ic-guideline-box" style="border-left-color: #43e97b;">
                                     <div class="ic-title" style="color: #43e97b;"><i class="fas fa-cut me-2"></i>SSI (Surgical Site Infection)</div>
-                                    <div class="ic-formula text-center">
-                                        <strong>Rate</strong> = (จำนวนผู้ป่วย SSI / จำนวนผู้ป่วยที่ได้รับการผ่าตัด) × 100
-                                    </div>
-                                    <div class="ic-criteria">
-                                        <strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong>
-                                        <ul>
-                                            <li>การติดเชื้อที่ตำแหน่งแผลผ่าตัด ซึ่งเกิดขึ้น<strong>ภายใน 30 วัน</strong> หลังการผ่าตัด</li>
-                                            <li><em>ข้อยกเว้น:</em> หากเป็นการผ่าตัดที่ใส่วัสดุเทียม (Implant) ในร่างกาย การเฝ้าระวังจะขยายเวลาเป็น <strong>90 วัน</strong> หลังการผ่าตัด</li>
-                                            <li>ตัวหารคิดเป็น "จำนวนราย (เคส) ผ่าตัด" ทำให้สูตรคูณด้วย 100 (ออกมาเป็นเปอร์เซ็นต์ %) ไม่ใช่คูณด้วย 1,000 เหมือนข้ออื่น</li>
-                                        </ul>
-                                    </div>
+                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย SSI / จำนวนผู้ป่วยที่ได้รับการผ่าตัด) × 100</div>
+                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>การติดเชื้อที่ตำแหน่งแผลผ่าตัด ซึ่งเกิดขึ้นภายใน 30 วัน หลังการผ่าตัด (หรือ 90 วันถ้าใส่วัสดุเทียม)</li><li>ตัวหารคิดเป็น "จำนวนราย (เคส) ผ่าตัด" ทำให้สูตรคูณด้วย 100</li></ul></div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
+    </div>
+    
+    <div class="container credit-footer no-print">
+        <i class="fas fa-laptop-medical me-1"></i> ระบบ HA Control Chart &copy; <span id="currentYearCredit"></span> | Developed by <strong>พี่ที</strong> (<a href="https://oyadata.com" target="_blank">oyadata.com</a>)
     </div>
 </div>
 
 <div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="modalTitle">เพิ่มข้อมูล</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+            <div class="modal-header modal-header-custom"><h5 class="modal-title" id="modalTitle">เพิ่มข้อมูล</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="dataForm">
-                    <input type="hidden" id="dataId">
-                    <input type="hidden" id="dataType">
-                    <div class="mb-3">
-                        <label class="form-label">เดือน</label>
-                        <select class="form-control form-control-custom" id="dataMonth" required>
-                            <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option>
-                            <option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
-                            <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option>
-                            <option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
-                        </select>
-                    </div>
+                    <input type="hidden" id="dataId"><input type="hidden" id="dataType">
+                    <div class="mb-3"><label class="form-label">เดือน</label><select class="form-control form-control-custom" id="dataMonth" required><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
                     <div class="mb-3"><label class="form-label">ปี</label><select class="form-control form-control-custom" id="dataYear" required></select></div>
                     <div class="mb-3"><label class="form-label" id="denominatorLabel">Denominator</label><input type="number" class="form-control form-control-custom" id="dataDenominator" required min="0" placeholder="ใส่จำนวน"></div>
                     <div class="mb-3"><label class="form-label">จำนวนติดเชื้อ (Cases)</label><input type="number" class="form-control form-control-custom" id="dataCases" required min="0" placeholder="ใส่จำนวน"></div>
@@ -417,6 +387,9 @@
 // =========================================================================
 const APP_PASSWORD = '1234'; 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIPmyGhOxhpENsiDFXttLwJlxS0VlcaZfTkiXF2hGoeK2wcVXONCVeW0lB9CKQ8kr8/exec';
+
+// ตั้งค่าปีปัจจุบันให้ Footer
+document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
 
 let globalData = []; let charts = {}; let currentEditId = null; let dataModal = null; let targetModal = null;
 let chartTargets = JSON.parse(localStorage.getItem('healthcareTargets')) || { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 };
@@ -544,7 +517,8 @@ async function loadDataFromServer() {
 function refreshUI() {
     const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI'];
     types.forEach(type => { renderTable(type); updateChart(type); });
-    updateDashboard(); updateFilterYears();
+    updateFilterYears(); 
+    updateDashboard(); 
 }
 
 function initializeYearSelect() {
@@ -558,11 +532,28 @@ function initializeYearSelect() {
 
 function updateFilterYears() {
     const years = [...new Set(globalData.map(d => d.year))].sort((a, b) => b - a);
+    if(years.length === 0) years.push(new Date().getFullYear());
+
+    const dashSelect = document.getElementById('dashboardYearFilter');
+    if(dashSelect) {
+        const currentDash = dashSelect.value;
+        dashSelect.innerHTML = '';
+        years.forEach(year => { 
+            const option = document.createElement('option'); option.value = year; option.textContent = 'ข้อมูลปี ' + year; 
+            dashSelect.appendChild(option); 
+        });
+        if(currentDash && years.includes(parseInt(currentDash))) {
+            dashSelect.value = currentDash;
+        } else {
+            dashSelect.value = years[0]; 
+        }
+    }
+
     ['vapYearFilter', 'cautiYearFilter', 'cabsiYearFilter', 'ssiYearFilter'].forEach(filterId => {
         const select = document.getElementById(filterId); if (!select) return;
         const currentValue = select.value; select.innerHTML = '<option value="all">ทั้งหมด</option>';
         years.forEach(year => { const option = document.createElement('option'); option.value = year; option.textContent = year; select.appendChild(option); });
-        select.value = currentValue;
+        if (currentValue === 'all' || years.includes(parseInt(currentValue))) select.value = currentValue;
     });
 }
 
@@ -677,21 +668,57 @@ function createControlChart(ctx, type, labels, rates, viewType) {
     charts[type] = new Chart(ctx, { type: 'line', plugins: [lineLabelPlugin], data: { labels: labels, datasets: [{ label: 'Rate', data: rates, borderColor: color.border, backgroundColor: color.bg, borderWidth: 3, pointBackgroundColor: color.point, pointRadius: 5, fill: true, tension: 0.4 }, { label: 'Mean', data: Array(labels.length).fill(mean), borderColor: '#2196f3', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }, { label: 'UCL', data: Array(labels.length).fill(ucl), borderColor: '#f44336', borderWidth: 2, borderDash: [10, 5], pointRadius: 0, fill: false }, { label: 'LCL', data: Array(labels.length).fill(lcl), borderColor: '#f44336', borderWidth: 2, borderDash: [10, 5], pointRadius: 0, fill: false }, { label: 'Target', data: Array(labels.length).fill(targetValue), borderColor: '#ff9800', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, layout: { padding: { right: 80 } }, plugins: { title: { display: true, text: `Control Chart - ${type} (${viewType === 'monthly' ? 'รายเดือน' : 'รายปี'})`, font: { size: 16, weight: 'bold' } }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) label += ': '; if (context.parsed.y !== null) { label += context.parsed.y.toFixed(2); if (context.dataset.label === 'Rate') label += type === 'SSI' ? '%' : ' per 1000'; } return label; } } } } } });
 }
 
-function filterData(type) { updateChart(type); }
-
 function updateDashboard() {
+    const dashSelect = document.getElementById('dashboardYearFilter');
+    const selectedYear = dashSelect ? parseInt(dashSelect.value) : new Date().getFullYear();
+
+    const filteredData = globalData.filter(d => d.year === selectedYear);
+
     const totals = { 'VAP': { cases: 0, denom: 0 }, 'CA-UTI': { cases: 0, denom: 0 }, 'CA-BSI': { cases: 0, denom: 0 }, 'SSI': { cases: 0, denom: 0 } };
-    globalData.forEach(d => { if (totals[d.type]) { totals[d.type].cases += d.cases; totals[d.type].denom += d.denominator; } });
-    document.getElementById('totalVAP').textContent = totals['VAP'].cases; document.getElementById('totalCAUTI').textContent = totals['CA-UTI'].cases; document.getElementById('totalCABSI').textContent = totals['CA-BSI'].cases; document.getElementById('totalSSI').textContent = totals['SSI'].cases;
-    document.getElementById('vapRate').textContent = `${totals['VAP'].denom > 0 ? ((totals['VAP'].cases / totals['VAP'].denom) * 1000).toFixed(2) : 0} per 1000`; document.getElementById('cautiRate').textContent = `${totals['CA-UTI'].denom > 0 ? ((totals['CA-UTI'].cases / totals['CA-UTI'].denom) * 1000).toFixed(2) : 0} per 1000`; document.getElementById('cabsiRate').textContent = `${totals['CA-BSI'].denom > 0 ? ((totals['CA-BSI'].cases / totals['CA-BSI'].denom) * 1000).toFixed(2) : 0} per 1000`; document.getElementById('ssiRate').textContent = `${totals['SSI'].denom > 0 ? ((totals['SSI'].cases / totals['SSI'].denom) * 100).toFixed(2) : 0}%`;
-    updateOverviewChart();
+    filteredData.forEach(d => { if (totals[d.type]) { totals[d.type].cases += d.cases; totals[d.type].denom += d.denominator; } });
+    
+    document.getElementById('totalVAP').textContent = totals['VAP'].cases.toLocaleString(); 
+    document.getElementById('totalCAUTI').textContent = totals['CA-UTI'].cases.toLocaleString(); 
+    document.getElementById('totalCABSI').textContent = totals['CA-BSI'].cases.toLocaleString(); 
+    document.getElementById('totalSSI').textContent = totals['SSI'].cases.toLocaleString();
+    
+    document.getElementById('vapRate').textContent = `${totals['VAP'].denom > 0 ? ((totals['VAP'].cases / totals['VAP'].denom) * 1000).toFixed(2) : 0} per 1000`; 
+    document.getElementById('cautiRate').textContent = `${totals['CA-UTI'].denom > 0 ? ((totals['CA-UTI'].cases / totals['CA-UTI'].denom) * 1000).toFixed(2) : 0} per 1000`; 
+    document.getElementById('cabsiRate').textContent = `${totals['CA-BSI'].denom > 0 ? ((totals['CA-BSI'].cases / totals['CA-BSI'].denom) * 1000).toFixed(2) : 0} per 1000`; 
+    document.getElementById('ssiRate').textContent = `${totals['SSI'].denom > 0 ? ((totals['SSI'].cases / totals['SSI'].denom) * 100).toFixed(2) : 0}%`;
+    
+    updateOverviewChart(selectedYear);
 }
 
-function updateOverviewChart() {
+function updateOverviewChart(selectedYear) {
     const ctx = document.getElementById('overviewChart'); if (!ctx) return; const context = ctx.getContext('2d'); if (charts.overview) { charts.overview.destroy(); }
-    const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI']; const latestYear = new Date().getFullYear();
-    const datasets = types.map((type, index) => { const typeData = globalData.filter(d => d.type === type && d.year === latestYear); const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b']; return { label: type, data: Array(12).fill(null).map((_, i) => { const monthData = typeData.find(d => d.month === i + 1); return monthData ? monthData.rate : null; }), borderColor: colors[index], backgroundColor: colors[index] + '20', tension: 0.4 }; });
-    charts.overview = new Chart(context, { type: 'line', data: { labels: monthNames, datasets: datasets }, options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `แนวโน้มอัตราการติดเชื้อ ปี ${latestYear}`, font: { size: 16 } } }, scales: { y: { beginAtZero: true } } } });
+    const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI']; 
+    
+    const datasets = types.map((type, index) => { 
+        const typeData = globalData.filter(d => d.type === type && d.year === selectedYear); 
+        const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b']; 
+        return { 
+            label: type, 
+            data: Array(12).fill(null).map((_, i) => { 
+                const monthData = typeData.find(d => d.month === i + 1); 
+                return monthData ? monthData.rate : null; 
+            }), 
+            borderColor: colors[index], 
+            backgroundColor: colors[index] + '20', 
+            tension: 0.4 
+        }; 
+    });
+    
+    charts.overview = new Chart(context, { 
+        type: 'line', 
+        data: { labels: monthNames, datasets: datasets }, 
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { title: { display: true, text: `แนวโน้มอัตราการติดเชื้อ ภาพรวมปี ${selectedYear}`, font: { size: 16 } } }, 
+            scales: { y: { beginAtZero: true } } 
+        } 
+    });
 }
 
 function exportData(type) {
