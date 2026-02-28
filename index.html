@@ -27,7 +27,6 @@
         .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); color: white; }
         .btn-outline-custom { border: 2px solid #667eea; color: #667eea; background: transparent; border-radius: 8px; padding: 8px 20px; font-weight: 500; }
         .btn-outline-custom:hover { background: #667eea; color: white; }
-        .btn-danger-custom { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; }
         .btn-warning-custom { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white; border: none; }
         .btn-pdf { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 500; }
         .table-custom { background: white; border-radius: 10px; overflow: hidden; }
@@ -341,13 +340,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const APP_PASSWORD = '1234'; 
+// =========================================================================
+// ⚠️ สำคัญมาก: เปลี่ยนลิงก์ SCRIPT_URL ด้านล่างเป็นลิงก์ Web App (เวอร์ชันใหม่) ของพี่ทีด้วยนะครับ
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIPmyGhOxhpENsiDFXttLwJlxS0VlcaZfTkiXF2hGoeK2wcVXONCVeW0lB9CKQ8kr8/exec';
+const APP_PASSWORD = '1234'; 
+// =========================================================================
 
 document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
 
 let globalData = []; let charts = {}; let currentEditId = null; let dataModal = null; let targetModal = null;
-let chartTargets = { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 }; // เตรียมค่าตั้งต้น
+let chartTargets = { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 }; 
 const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const fullMonthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
@@ -374,7 +376,6 @@ document.addEventListener('DOMContentLoaded', function() { checkLoginStatus(); }
 function applyPermissions() {
     const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
     const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
-    
     if (isAdmin) {
         document.querySelectorAll('.btn-add-data').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.btn-set-target').forEach(el => el.style.display = 'inline-block');
@@ -412,26 +413,26 @@ function handleLogin(event) {
 function logout() { sessionStorage.removeItem('ha_logged_in'); location.reload(); }
 
 function initSystem() {
-    dataModal = new bootstrap.Modal(document.getElementById('dataModal')); targetModal = new bootstrap.Modal(document.getElementById('targetModal'));
+    dataModal = new bootstrap.Modal(document.getElementById('dataModal')); 
+    targetModal = new bootstrap.Modal(document.getElementById('targetModal'));
     initializeYearSelect(); loadDataFromServer(); 
-    document.getElementById('dataDenominator').addEventListener('input', calculateRate); document.getElementById('dataCases').addEventListener('input', calculateRate);
+    document.getElementById('dataDenominator').addEventListener('input', calculateRate); 
+    document.getElementById('dataCases').addEventListener('input', calculateRate);
 }
 
-// โหลดข้อมูลทั้งหมด (รวมถึง Target ส่วนกลาง) จากเซิร์ฟเวอร์
 async function loadDataFromServer() {
     Swal.fire({ title: 'กำลังโหลดข้อมูลจากคลาวด์...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     try {
         const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
         const rawText = await response.text(); 
         let responseData;
-        try { responseData = JSON.parse(rawText); } catch (e) { throw new Error("รูปแบบข้อมูลขัดข้อง"); }
+        try { responseData = JSON.parse(rawText); } catch (e) { throw new Error("รูปแบบข้อมูลขัดข้อง (กรุณาเช็ค Google Sheet)"); }
         
-        // แยกข้อมูลออกจาก Object ที่ฝั่ง Backend ส่งมา
         let dataArray = [];
         if (Array.isArray(responseData)) { dataArray = responseData; } 
         else if (responseData && responseData.data) {
             dataArray = responseData.data;
-            if (responseData.targets) { chartTargets = responseData.targets; } // ดึงเป้าหมายส่วนกลางมาใช้
+            if (responseData.targets) { chartTargets = responseData.targets; } 
         }
 
         const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
@@ -463,7 +464,10 @@ async function loadDataFromServer() {
         }
 
         Swal.close(); refreshUI();
-    } catch (error) { Swal.fire('ข้อผิดพลาด', 'โหลดข้อมูลไม่สำเร็จ', 'error'); }
+    } catch (error) { 
+        Swal.fire('ข้อผิดพลาด', 'โหลดข้อมูลไม่สำเร็จ: ตรวจสอบลิงก์ SCRIPT_URL', 'error'); 
+        console.error("Load Error: ", error);
+    }
 }
 
 function refreshUI() {
@@ -507,29 +511,44 @@ function calculateRate() {
 }
 
 function openTargetModal(type) {
-    document.getElementById('targetType').value = type; document.getElementById('targetLabel').textContent = `กำหนดอัตราเป้าหมายของ ${type}`;
-    document.getElementById('targetValue').value = chartTargets[type] || 0; targetModal.show();
+    document.getElementById('targetType').value = type; 
+    document.getElementById('targetLabel').textContent = `กำหนดอัตราเป้าหมายของ ${type}`;
+    document.getElementById('targetValue').value = chartTargets[type] || 0; 
+    targetModal.show();
 }
 
-// อัปเกรดระบบบันทึก Target ส่วนกลาง
 async function saveTarget() {
-    const type = document.getElementById('targetType').value; const value = parseFloat(document.getElementById('targetValue').value);
-    if (isNaN(value) || value < 0) { Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลขที่ถูกต้อง', 'warning'); return; }
+    const type = document.getElementById('targetType').value; 
+    const value = parseFloat(document.getElementById('targetValue').value);
     
-    Swal.fire({ title: 'กำลังบันทึกเป้าหมายส่วนกลาง...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    if (isNaN(value) || value < 0) { 
+        Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลขให้ถูกต้อง', 'warning'); return; 
+    }
+    
+    Swal.fire({ title: 'กำลังบันทึกเป้าหมาย...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     
     try {
-        await fetch(SCRIPT_URL, { 
-            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+        const response = await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            redirect: 'follow', 
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
             body: JSON.stringify({ action: 'saveTarget', type: type, value: value }) 
         });
         
-        chartTargets[type] = value; 
-        targetModal.hide(); 
-        Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', text: `ทุกคนในระบบจะเห็นเป้าหมายใหม่ทันที`, timer: 2000, showConfirmButton: false }); 
-        updateChart(type); 
+        const resultText = await response.text();
+        const resultData = JSON.parse(resultText);
+        
+        if(resultData.status === 'success') {
+            chartTargets[type] = value; 
+            targetModal.hide(); 
+            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', text: `ทุกคนในระบบจะเห็นเป้าหมายใหม่ทันที`, timer: 2000, showConfirmButton: false }); 
+            updateChart(type); 
+        } else {
+            throw new Error(resultData.error || "Unknown Error");
+        }
     } catch (e) {
-        Swal.fire('ข้อผิดพลาด', 'บันทึกเป้าหมายไม่สำเร็จ: ' + e.message, 'error');
+        console.error("Save Target Error: ", e);
+        Swal.fire('ข้อผิดพลาด', 'บันทึกเป้าหมายไม่สำเร็จ ตรวจสอบ SCRIPT_URL หรือ Deploy ใหม่', 'error');
     }
 }
 
@@ -562,16 +581,39 @@ async function saveData() {
 
     Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     try {
-        await fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'save', data: newData }) });
-        dataModal.hide(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลแล้ว', timer: 1500, showConfirmButton: false }); loadDataFromServer(); 
-    } catch (e) { Swal.fire('ข้อผิดพลาด', 'บันทึกไม่สำเร็จ: ' + e.message, 'error'); }
+        const response = await fetch(SCRIPT_URL, { 
+            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+            body: JSON.stringify({ action: 'save', data: newData }) 
+        });
+        
+        const resultText = await response.text();
+        const resultData = JSON.parse(resultText);
+        
+        if(resultData.status === 'success') {
+            dataModal.hide(); 
+            Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลแล้ว', timer: 1500, showConfirmButton: false }); 
+            loadDataFromServer(); 
+        } else {
+            throw new Error(resultData.error || "Unknown Error");
+        }
+    } catch (e) { 
+        console.error("Save Data Error: ", e);
+        Swal.fire('ข้อผิดพลาด', 'บันทึกไม่สำเร็จ ตรวจสอบการอัปเดต Google Apps Script', 'error'); 
+    }
 }
 
 function deleteData(id, type) {
     Swal.fire({ title: 'ยืนยันการลบ?', text: "ลบถาวร", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ลบ', cancelButtonText: 'ยกเลิก' }).then(async (result) => {
         if (result.isConfirmed) {
             Swal.fire({ title: 'กำลังลบ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            try { await fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: 'delete', id: id }) }); Swal.fire({ icon: 'success', title: 'ลบแล้ว', timer: 1500, showConfirmButton: false }); loadDataFromServer(); } catch (e) { Swal.fire('ข้อผิดพลาด', 'ลบไม่สำเร็จ', 'error'); }
+            try { 
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+                    body: JSON.stringify({ action: 'delete', id: id }) 
+                }); 
+                Swal.fire({ icon: 'success', title: 'ลบแล้ว', timer: 1500, showConfirmButton: false }); 
+                loadDataFromServer(); 
+            } catch (e) { Swal.fire('ข้อผิดพลาด', 'ลบไม่สำเร็จ', 'error'); }
         }
     });
 }
@@ -665,26 +707,6 @@ function generatePDF() {
     const opt = { margin: 10, filename: `HA_Report_${agency}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
     Swal.fire({ title: 'กำลังสร้างไฟล์ PDF...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     html2pdf().set(opt).from(element).save().then(() => { pdfHeader.style.display = 'none'; pdfHeader.classList.add('d-none'); Swal.close(); });
-}
-    async function saveTarget() {
-    const type = document.getElementById('targetType').value; 
-    const value = parseFloat(document.getElementById('targetValue').value);
-    if (isNaN(value) || value < 0) { Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลข', 'warning'); return; }
-    
-    Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    try {
-        await fetch(SCRIPT_URL, { 
-            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-            // ⚠️ ตรงนี้สำคัญ โค้ดต้องส่ง action: 'saveTarget' ไปครับ
-            body: JSON.stringify({ action: 'saveTarget', type: type, value: value }) 
-        });
-        chartTargets[type] = value; 
-        targetModal.hide(); 
-        Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1500, showConfirmButton: false }); 
-        updateChart(type); 
-    } catch (e) {
-        Swal.fire('ข้อผิดพลาด', 'บันทึกไม่สำเร็จ', 'error');
-    }
 }
 </script>
 </body>
