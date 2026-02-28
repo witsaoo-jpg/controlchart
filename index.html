@@ -666,6 +666,26 @@ function generatePDF() {
     Swal.fire({ title: 'กำลังสร้างไฟล์ PDF...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     html2pdf().set(opt).from(element).save().then(() => { pdfHeader.style.display = 'none'; pdfHeader.classList.add('d-none'); Swal.close(); });
 }
+    async function saveTarget() {
+    const type = document.getElementById('targetType').value; 
+    const value = parseFloat(document.getElementById('targetValue').value);
+    if (isNaN(value) || value < 0) { Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลข', 'warning'); return; }
+    
+    Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    try {
+        await fetch(SCRIPT_URL, { 
+            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+            // ⚠️ ตรงนี้สำคัญ โค้ดต้องส่ง action: 'saveTarget' ไปครับ
+            body: JSON.stringify({ action: 'saveTarget', type: type, value: value }) 
+        });
+        chartTargets[type] = value; 
+        targetModal.hide(); 
+        Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1500, showConfirmButton: false }); 
+        updateChart(type); 
+    } catch (e) {
+        Swal.fire('ข้อผิดพลาด', 'บันทึกไม่สำเร็จ', 'error');
+    }
+}
 </script>
 </body>
 </html>
