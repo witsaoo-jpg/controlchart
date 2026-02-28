@@ -40,7 +40,6 @@
         .modal-header-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .credit-footer { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
         .credit-footer a { color: white; text-decoration: none; font-weight: 600; }
-        .admin-only { display: none; }
         
         @media print {
             body { background: white; padding: 0; }
@@ -196,9 +195,10 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // =========================================================================
-// ⚠️ เปลี่ยนลิงก์ Web App ตรงนี้เป็นของพี่ที (เวอร์ชันใหม่ที่ใส่โค้ด Indicator แล้ว)
+// ⚠️ เปลี่ยนลิงก์ Web App ตรงนี้เป็นของพี่ทีนะครับ
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmxMyN-1G4SPoQI4w54fynm8fzdR-CCsiVjXsqyNxr4GLbHZOcKnF-oB9U3fNbigbQ/exec';
 const APP_PASSWORD = '1234'; 
 // =========================================================================
@@ -277,28 +277,30 @@ async function loadDataFromServer() {
     } catch (e) { Swal.fire('Error', 'โหลดข้อมูลล้มเหลว', 'error'); console.error(e); }
 }
 
-// ================= ระบบสร้างหน้าจอแบบอัตโนมัติตามตัวชี้วัด (Dynamic UI Builder) =================
+// แก้ไขบักการสร้างแท็บ (เพิ่ม type="button" และเคลียร์ DOM อย่างถูกต้อง)
 function buildDynamicUI() {
     const tabsUl = document.getElementById('dynamicTabs');
     const contentDiv = document.getElementById('dynamicTabContent');
     const isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
     
-    // เคลียร์แท็บเก่า (เก็บเฉพาะ Dashboard และ Admin)
-    tabsUl.innerHTML = `<li class="nav-item"><button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</button></li>`;
+    // ลบเนื้อหา Pane เก่าที่เคยสร้างไว้ออกให้หมด (ยกเว้น dashboard และ adminSettings)
     const oldPanes = contentDiv.querySelectorAll('.dynamic-pane');
     oldPanes.forEach(p => p.remove());
+
+    // สร้างปุ่ม Tab ใหม่ทั้งหมด
+    let tabsHtml = `<li class="nav-item"><button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard" type="button" role="tab"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</button></li>`;
 
     const activeIndicators = globalIndicators.filter(i => i.isActive);
 
     activeIndicators.forEach((ind, index) => {
         let color = colorPalette[index % colorPalette.length];
         
-        // 1. สร้างปุ่ม Tab
-        tabsUl.innerHTML += `<li class="nav-item"><button class="nav-link" id="${ind.code}-tab" data-bs-toggle="pill" data-bs-target="#pane-${ind.code}">${ind.code}</button></li>`;
+        // ต่อข้อความปุ่ม Tab (เพิ่ม type="button" แล้ว)
+        tabsHtml += `<li class="nav-item"><button class="nav-link" id="${ind.code}-tab" data-bs-toggle="pill" data-bs-target="#pane-${ind.code}" type="button" role="tab">${ind.code}</button></li>`;
         
-        // 2. สร้างหน้าต่างเนื้อหา (Tab Pane)
+        // วาดเนื้อหา (Tab Pane) แทรกเข้าไป
         let actionButtons = isAdmin 
-            ? `<button class="btn btn-warning btn-sm fw-bold" onclick="openTargetModal('${ind.code}')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมายส่วนกลาง</button>` 
+            ? `<button class="btn btn-warning btn-sm fw-bold" onclick="openTargetModal('${ind.code}')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมายกลาง</button>` 
             : `<button class="btn btn-light btn-sm text-dark" onclick="openModal('${ind.code}')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>`;
 
         let paneHtml = `
@@ -329,11 +331,13 @@ function buildDynamicUI() {
         contentDiv.insertAdjacentHTML('beforeend', paneHtml);
     });
 
-    // 3. แสดงปุ่ม Admin ถ้าเป็นผู้ดูแล
+    // ปุ่มตั้งค่า Admin
     if (isAdmin) {
-        tabsUl.innerHTML += `<li class="nav-item"><button class="nav-link text-danger fw-bold" data-bs-toggle="pill" data-bs-target="#adminSettings"><i class="fas fa-cogs me-1"></i>ตั้งค่า</button></li>`;
+        tabsHtml += `<li class="nav-item"><button class="nav-link text-danger fw-bold" id="adminSettings-tab" data-bs-toggle="pill" data-bs-target="#adminSettings" type="button" role="tab"><i class="fas fa-cogs me-1"></i>ตั้งค่า</button></li>`;
         renderAdminSettings();
     }
+
+    tabsUl.innerHTML = tabsHtml; // วางลง HTML ทีเดียว
 
     updateFilterYears();
     activeIndicators.forEach(ind => { renderTable(ind.code); updateChart(ind.code); });
@@ -362,6 +366,7 @@ function editIndicator(code) {
     document.getElementById('indStatus').checked = ind.isActive; indicatorModal.show();
 }
 
+// แก้ไขบัก NetworkError (เพิ่ม redirect และ Headers)
 async function saveIndicator() {
     let code = document.getElementById('indCode').value.toUpperCase().trim(); let name = document.getElementById('indName').value.trim();
     let multiplier = parseInt(document.getElementById('indMultiplier').value); let isActive = document.getElementById('indStatus').checked;
@@ -370,12 +375,16 @@ async function saveIndicator() {
     let indObj = { code, name, multiplier, isActive };
     Swal.fire({ title: 'กำลังบันทึกตัวชี้วัด...', didOpen: () => Swal.showLoading() });
     try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'saveIndicator', indicator: indObj }) });
-        indicatorModal.hide(); Swal.fire('สำเร็จ', 'บันทึกเรียบร้อย', 'success'); loadDataFromServer(); // โหลดใหม่เพื่อวาดหน้าจอใหม่
+        await fetch(SCRIPT_URL, { 
+            method: 'POST', 
+            redirect: 'follow', 
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: 'saveIndicator', indicator: indObj }) 
+        });
+        indicatorModal.hide(); Swal.fire('สำเร็จ', 'บันทึกเรียบร้อย', 'success'); loadDataFromServer(); 
     } catch(e) { Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ', 'error'); }
 }
 
-// ================= ระบบบันทึกและคำนวณกราฟ =================
 function initializeYearSelect() {
     let ySelect = document.getElementById('dataYear'); ySelect.innerHTML=''; let cy = new Date().getFullYear();
     for(let y=cy-5; y<=cy+1; y++) ySelect.innerHTML += `<option value="${y}" ${y==cy?'selected':''}>${y}</option>`;
@@ -415,6 +424,7 @@ function openModal(type, id=null) {
     dataModal.show();
 }
 
+// แก้ไขบัก NetworkError (เพิ่ม redirect และ Headers)
 async function saveData() {
     let type=document.getElementById('dataType').value, id=document.getElementById('dataId').value;
     let m=parseInt(document.getElementById('dataMonth').value), y=parseInt(document.getElementById('dataYear').value);
@@ -426,27 +436,50 @@ async function saveData() {
     Swal.fire({ title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading() });
     try {
         let payload = { action:'save', data: {id:id||Date.now(), agency:localStorage.getItem('ha_agency_name'), type, month:m, year:y, denominator:den, cases, rate} };
-        await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(payload) });
+        await fetch(SCRIPT_URL, { 
+            method:'POST', 
+            redirect: 'follow', 
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body:JSON.stringify(payload) 
+        });
         dataModal.hide(); Swal.fire('สำเร็จ', 'บันทึกข้อมูลแล้ว', 'success'); loadDataFromServer();
     } catch(e) { Swal.fire('Error','บันทึกไม่สำเร็จ','error'); }
 }
 
+// แก้ไขบัก NetworkError (เพิ่ม redirect และ Headers)
 function deleteData(id) {
     Swal.fire({ title:'ลบข้อมูล?', icon:'warning', showCancelButton:true, confirmButtonText:'ลบ' }).then(async(res)=>{
         if(res.isConfirmed) {
             Swal.fire({ title:'กำลังลบ...', didOpen:()=>Swal.showLoading() });
-            await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify({action:'delete', id:id}) });
+            await fetch(SCRIPT_URL, { 
+                method:'POST', 
+                redirect: 'follow', 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body:JSON.stringify({action:'delete', id:id}) 
+            });
             Swal.fire('สำเร็จ', '', 'success'); loadDataFromServer();
         }
     });
 }
 
 function openTargetModal(type) { document.getElementById('targetType').value=type; document.getElementById('targetValue').value=chartTargets[type]||0; targetModal.show(); }
+
+// แก้ไขบัก NetworkError (เพิ่ม redirect และ Headers)
 async function saveTarget() {
     let t=document.getElementById('targetType').value, v=parseFloat(document.getElementById('targetValue').value);
     if(isNaN(v)) return; Swal.fire({ title:'กำลังบันทึกเป้าหมาย...', didOpen:()=>Swal.showLoading() });
-    await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify({action:'saveTarget', type:t, value:v}) });
-    targetModal.hide(); Swal.fire('สำเร็จ', '', 'success'); loadDataFromServer();
+    
+    try {
+        await fetch(SCRIPT_URL, { 
+            method:'POST', 
+            redirect: 'follow', 
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body:JSON.stringify({action:'saveTarget', type:t, value:v}) 
+        });
+        targetModal.hide(); Swal.fire('สำเร็จ', 'บันทึกเป้าหมายแล้ว', 'success'); loadDataFromServer();
+    } catch(e) {
+        Swal.fire('ข้อผิดพลาด', 'บันทึกเป้าหมายไม่สำเร็จ (NetworkError)', 'error');
+    }
 }
 
 function renderTable(type) {
@@ -461,7 +494,10 @@ function renderTable(type) {
 }
 
 function updateChart(type) {
-    let ctx = document.getElementById(`chart-${type}`).getContext('2d');
+    let canvas = document.getElementById(`chart-${type}`);
+    if(!canvas) return; // ป้องกัน Error ถ้าหา Canvas ไม่เจอ
+    let ctx = canvas.getContext('2d');
+    
     let view = document.getElementById(`viewType-${type}`).value; let yf = document.getElementById(`yearFilter-${type}`).value;
     let data = globalData.filter(d => d.type === type); if(yf !== 'all') data = data.filter(d => d.year == yf);
     let ind = globalIndicators.find(i => i.code === type);
