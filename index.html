@@ -52,7 +52,6 @@
         .ic-criteria ul { padding-left: 20px; margin-bottom: 0; }
         .ic-criteria li { margin-bottom: 5px; }
         
-        /* สไตล์สำหรับเครดิต */
         .credit-footer { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
         .credit-footer a { color: white; text-decoration: none; font-weight: 600; transition: opacity 0.3s; }
         .credit-footer a:hover { opacity: 0.8; text-decoration: underline; }
@@ -82,31 +81,18 @@
                 <label class="form-label fw-bold">เลือกหน่วยงาน / หอผู้ป่วย</label>
                 <select class="form-select form-select-custom" id="inputAgency" required>
                     <option value="" disabled selected>-- กรุณาเลือกหอผู้ป่วย --</option>
-                    <optgroup label="อื่นๆ / ผู้ดูแลระบบ">
-                        <option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (ดูภาพรวมทั้ง รพ.)</option>
-                    </optgroup>
+                    <optgroup label="อื่นๆ / ผู้ดูแลระบบ"><option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (ดูภาพรวมทั้ง รพ.)</option></optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยอายุรกรรม">
-                        <option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option>
-                        <option value="หอผู้ป่วย สก.5">หอผู้ป่วย สก.5</option><option value="หอผู้ป่วย สก.6">หอผู้ป่วย สก.6</option>
-                        <option value="หอผู้ป่วยสงฆ์อาพาธ">หอผู้ป่วยสงฆ์อาพาธ</option><option value="หอผู้ป่วยสงฆ์พิเศษ 2+3">หอผู้ป่วยสงฆ์พิเศษ 2+3</option>
-                        <option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2</option>
-                        <option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง">หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน">หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน</option>
-                        <option value="หอผู้ป่วย Low Immune ธนจ.4">หอผู้ป่วย Low Immune ธนจ.4</option>
+                        <option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option><option value="หอผู้ป่วย สก.5">หอผู้ป่วย สก.5</option><option value="หอผู้ป่วย สก.6">หอผู้ป่วย สก.6</option><option value="หอผู้ป่วยสงฆ์อาพาธ">หอผู้ป่วยสงฆ์อาพาธ</option><option value="หอผู้ป่วยสงฆ์พิเศษ 2+3">หอผู้ป่วยสงฆ์พิเศษ 2+3</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง">หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน">หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน</option><option value="หอผู้ป่วย Low Immune ธนจ.4">หอผู้ป่วย Low Immune ธนจ.4</option>
                     </optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยศัลยกรรม">
-                        <option value="หอผู้ป่วยชลาทิศ 1">หอผู้ป่วยชลาทิศ 1</option><option value="หอผู้ป่วยชลาทิศ 2">หอผู้ป่วยชลาทิศ 2</option>
-                        <option value="หอผู้ป่วยชลาทิศ 3">หอผู้ป่วยชลาทิศ 3</option><option value="หอผู้ป่วยชลาทิศ 4">หอผู้ป่วยชลาทิศ 4</option>
-                        <option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.7">หอผู้ป่วยพิเศษศัลยกรรม ฉ.7</option><option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.8">หอผู้ป่วยพิเศษศัลยกรรม ฉ.8</option>
-                        <option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.9">หอผู้ป่วยพิเศษศัลยกรรม Ex.9</option><option value="หอผู้ป่วยแผลไหม้">หอผู้ป่วยแผลไหม้</option>
-                        <option value="หอผู้ป่วยเคมีบำบัด">หอผู้ป่วยเคมีบำบัด</option>
+                        <option value="หอผู้ป่วยชลาทิศ 1">หอผู้ป่วยชลาทิศ 1</option><option value="หอผู้ป่วยชลาทิศ 2">หอผู้ป่วยชลาทิศ 2</option><option value="หอผู้ป่วยชลาทิศ 3">หอผู้ป่วยชลาทิศ 3</option><option value="หอผู้ป่วยชลาทิศ 4">หอผู้ป่วยชลาทิศ 4</option><option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.7">หอผู้ป่วยพิเศษศัลยกรรม ฉ.7</option><option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.8">หอผู้ป่วยพิเศษศัลยกรรม ฉ.8</option><option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.9">หอผู้ป่วยพิเศษศัลยกรรม Ex.9</option><option value="หอผู้ป่วยแผลไหม้">หอผู้ป่วยแผลไหม้</option><option value="หอผู้ป่วยเคมีบำบัด">หอผู้ป่วยเคมีบำบัด</option>
                     </optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยสูติ-นรีเวช">
-                        <option value="หอผู้ป่วยหลังคลอด">หอผู้ป่วยหลังคลอด</option><option value="หอผู้ป่วยนรีเวช ชลารักษ์4">หอผู้ป่วยนรีเวช ชลารักษ์4</option>
-                        <option value="หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4">หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4</option>
+                        <option value="หอผู้ป่วยหลังคลอด">หอผู้ป่วยหลังคลอด</option><option value="หอผู้ป่วยนรีเวช ชลารักษ์4">หอผู้ป่วยนรีเวช ชลารักษ์4</option><option value="หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4">หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4</option>
                     </optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยออร์โธปิดิกส์">
-                        <option value="หอผู้ป่วยกระดูกชาย">หอผู้ป่วยกระดูกชาย</option><option value="หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง">หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง</option>
-                        <option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.8">หอผู้ป่วยพิเศษศัลยกรรม Ex.8</option>
+                        <option value="หอผู้ป่วยกระดูกชาย">หอผู้ป่วยกระดูกชาย</option><option value="หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง">หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง</option><option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.8">หอผู้ป่วยพิเศษศัลยกรรม Ex.8</option>
                     </optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วย โสต ศอ นาสิก จักษุ">
                         <option value="หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3">หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3</option><option value="หอผู้ป่วยพิเศษ EENT">หอผู้ป่วยพิเศษ EENT</option>
@@ -118,10 +104,7 @@
                 <input type="password" class="form-control form-control-custom" id="inputPassword" required placeholder="ใส่รหัสผ่าน 1234">
             </div>
             <button type="submit" class="btn btn-custom w-100 py-2 fs-5">เข้าสู่ระบบ</button>
-            
-            <div class="mt-4 pt-3 border-top text-muted small">
-                <i class="fas fa-code me-1"></i> Developed by <strong>พี่ที</strong> | <a href="https://oyadata.com" target="_blank" class="text-decoration-none text-muted">oyadata.com</a>
-            </div>
+            <div class="mt-4 pt-3 border-top text-muted small"><i class="fas fa-code me-1"></i> Developed by <strong>พี่ที</strong> | <a href="https://oyadata.com" target="_blank" class="text-decoration-none text-muted">oyadata.com</a></div>
         </form>
     </div>
 </div>
@@ -131,7 +114,7 @@
         <div class="text-center mb-4 no-print">
             <h1 class="header-title mb-2"><i class="fas fa-chart-line me-2"></i>Healthcare Control Chart System</h1>
             <div class="agency-badge"><i class="far fa-building me-2"></i><span id="displayAgencyName">ชื่อหน่วยงาน</span></div>
-            <p class="text-muted">ระบบติดตามและวิเคราะห์อัตราการติดเชื้อในโรงพยาบาลตามมาตรฐาน HA (อิงตามเกณฑ์ CDC/NHSN)</p>
+            <p class="text-muted">ระบบติดตามและวิเคราะห์อัตราการติดเชื้อในโรงพยาบาลตามมาตรฐาน HA</p>
             <button class="btn btn-sm btn-outline-secondary mt-2" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</button>
         </div>
 
@@ -141,12 +124,11 @@
             <li class="nav-item"><button class="nav-link" id="cauti-tab" data-bs-toggle="pill" data-bs-target="#cauti" type="button"><i class="fas fa-procedures me-2"></i>CA-UTI</button></li>
             <li class="nav-item"><button class="nav-link" id="cabsi-tab" data-bs-toggle="pill" data-bs-target="#cabsi" type="button"><i class="fas fa-heartbeat me-2"></i>CA-BSI</button></li>
             <li class="nav-item"><button class="nav-link" id="ssi-tab" data-bs-toggle="pill" data-bs-target="#ssi" type="button"><i class="fas fa-cut me-2"></i>SSI</button></li>
-            <li class="nav-item"><button class="nav-link" id="manual-tab" data-bs-toggle="pill" data-bs-target="#manual" type="button"><i class="fas fa-book me-2"></i>คู่มือและเกณฑ์วินิจฉัย</button></li>
+            <li class="nav-item"><button class="nav-link" id="manual-tab" data-bs-toggle="pill" data-bs-target="#manual" type="button"><i class="fas fa-book me-2"></i>คู่มือ</button></li>
         </ul>
 
         <div class="tab-content" id="mainTabContent">
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                
                 <div class="d-flex justify-content-between align-items-end mb-3 no-print filter-section">
                     <div style="min-width: 200px;">
                         <label class="form-label text-muted mb-1 small fw-bold">เลือกปีเพื่อดูภาพรวมกราฟ</label>
@@ -292,49 +274,27 @@
                         <div class="card card-custom h-100">
                             <div class="card-header card-header-custom"><i class="fas fa-cogs me-2"></i>คำแนะนำการใช้ระบบ</div>
                             <div class="card-body ic-criteria">
-                                <h6 class="fw-bold text-primary mb-2">บทบาทและสิทธิ์การใช้งาน:</h6>
                                 <ul>
-                                    <li><strong>พยาบาลประจำหอผู้ป่วย:</strong> มีหน้าที่บันทึกจำนวน Denominator และ Numerator ในแต่ละเดือน ระบบจะคำนวณ Rate ให้อัตโนมัติ</li>
-                                    <li><strong>Admin กลาง (ICN):</strong> มีหน้าที่ตั้ง Target เปรียบเทียบ และสามารถดูภาพรวมผลรวมของทั้งโรงพยาบาลได้</li>
+                                    <li><strong>พยาบาลหอผู้ป่วย:</strong> บันทึกจำนวน Denominator และ Numerator ในแต่ละเดือน ระบบจะคำนวณ Rate ให้อัตโนมัติ</li>
+                                    <li><strong>Admin กลาง (ICN):</strong> ตั้ง Target เปรียบเทียบ และสามารถดูภาพรวมผลรวมของทั้ง รพ. ได้</li>
                                 </ul>
                                 <hr>
-                                <h6 class="fw-bold text-primary mb-2">การอ่านกราฟ Control Chart:</h6>
                                 <ul>
                                     <li><strong>เส้น Target (สีส้ม):</strong> เป้าหมายที่ รพ. กำหนด</li>
-                                    <li><strong>เส้น Mean (สีน้ำเงิน):</strong> ค่าเฉลี่ยของข้อมูลเราเอง</li>
-                                    <li><strong>เส้น UCL / LCL (สีแดง):</strong> ขีดจำกัดบนและล่างทางสถิติ (Control Limits)</li>
-                                    <li><span class="text-danger fw-bold">⚠️ หากกราฟทะลุเส้น UCL:</span> ถือเป็นสัญญาณเตือน (Special Cause Variation) ต้องรีบหาสาเหตุและทำ CQI ด่วน!</li>
+                                    <li><strong>เส้น Mean (สีน้ำเงิน):</strong> ค่าเฉลี่ยของข้อมูล</li>
+                                    <li><strong>เส้น UCL / LCL (สีแดง):</strong> ขีดจำกัดทางสถิติ (Control Limits)</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-8 mb-4">
                         <div class="card card-custom h-100">
-                            <div class="card-header card-header-custom" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
-                                <i class="fas fa-book-medical me-2"></i>เกณฑ์วินิจฉัยและสูตรคำนวณ (อิงมาตรฐาน HA / CDC NHSN)
-                            </div>
+                            <div class="card-header card-header-custom" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);"><i class="fas fa-book-medical me-2"></i>สูตรคำนวณ</div>
                             <div class="card-body">
-                                <div class="ic-guideline-box">
-                                    <div class="ic-title"><i class="fas fa-lungs me-2"></i>VAP (Ventilator-Associated Pneumonia)</div>
-                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย VAP / จำนวนวันค้างท่อช่วยหายใจ) × 1,000</div>
-                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยเกิดภาวะปอดอักเสบ หลังจากใส่ท่อช่วยหายใจไปแล้วเกิน 48 ชั่วโมง</li><li>Denominator: นับ "จำนวนวัน" ที่ผู้ป่วยใส่ท่อช่วยหายใจรวมกันทุกคนในวอร์ดในเดือนนั้น</li></ul></div>
-                                </div>
-                                <div class="ic-guideline-box" style="border-left-color: #f093fb;">
-                                    <div class="ic-title" style="color: #f093fb;"><i class="fas fa-procedures me-2"></i>CA-UTI (Catheter-Associated Urinary Tract Infection)</div>
-                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย CA-UTI / จำนวนวันค้างสายสวนปัสสาวะ) × 1,000</div>
-                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยติดเชื้อในระบบทางเดินปัสสาวะ โดยมีการค้างสายสวนปัสสาวะไว้เกิน 2 วันปฏิทิน</li><li>ต้องมีอาการทางคลินิกร่วมกับผลเพาะเชื้อปัสสาวะบวก</li></ul></div>
-                                </div>
-                                <div class="ic-guideline-box" style="border-left-color: #4facfe;">
-                                    <div class="ic-title" style="color: #4facfe;"><i class="fas fa-heartbeat me-2"></i>CA-BSI / CLABSI (Central Line-Associated Bloodstream Infection)</div>
-                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย CA-BSI / จำนวนวันค้างสายสวนหลอดเลือดดำส่วนกลาง) × 1,000</div>
-                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>ผู้ป่วยติดเชื้อในกระแสเลือดปฐมภูมิ ที่ได้รับการค้างสายสวนหลอดเลือดดำส่วนกลางไว้เกิน 2 วันปฏิทิน</li></ul></div>
-                                </div>
-                                <div class="ic-guideline-box" style="border-left-color: #43e97b;">
-                                    <div class="ic-title" style="color: #43e97b;"><i class="fas fa-cut me-2"></i>SSI (Surgical Site Infection)</div>
-                                    <div class="ic-formula text-center"><strong>Rate</strong> = (จำนวนผู้ป่วย SSI / จำนวนผู้ป่วยที่ได้รับการผ่าตัด) × 100</div>
-                                    <div class="ic-criteria"><strong>เกณฑ์วินิจฉัยเบื้องต้น (Criteria):</strong><ul><li>การติดเชื้อที่ตำแหน่งแผลผ่าตัด ซึ่งเกิดขึ้นภายใน 30 วัน หลังการผ่าตัด (หรือ 90 วันถ้าใส่วัสดุเทียม)</li><li>ตัวหารคิดเป็น "จำนวนราย (เคส) ผ่าตัด" ทำให้สูตรคูณด้วย 100</li></ul></div>
-                                </div>
+                                <div class="ic-guideline-box"><div class="ic-title"><i class="fas fa-lungs me-2"></i>VAP</div><div class="ic-formula text-center"><strong>Rate</strong> = (VAP / Ventilator Days) × 1,000</div></div>
+                                <div class="ic-guideline-box" style="border-left-color: #f093fb;"><div class="ic-title" style="color: #f093fb;"><i class="fas fa-procedures me-2"></i>CA-UTI</div><div class="ic-formula text-center"><strong>Rate</strong> = (CA-UTI / Catheter Days) × 1,000</div></div>
+                                <div class="ic-guideline-box" style="border-left-color: #4facfe;"><div class="ic-title" style="color: #4facfe;"><i class="fas fa-heartbeat me-2"></i>CA-BSI</div><div class="ic-formula text-center"><strong>Rate</strong> = (CA-BSI / Central Line Days) × 1,000</div></div>
+                                <div class="ic-guideline-box" style="border-left-color: #43e97b;"><div class="ic-title" style="color: #43e97b;"><i class="fas fa-cut me-2"></i>SSI</div><div class="ic-formula text-center"><strong>Rate</strong> = (SSI / Surgical Cases) × 100</div></div>
                             </div>
                         </div>
                     </div>
@@ -342,10 +302,7 @@
             </div>
         </div>
     </div>
-    
-    <div class="container credit-footer no-print">
-        <i class="fas fa-laptop-medical me-1"></i> ระบบ HA Control Chart &copy; <span id="currentYearCredit"></span> | Developed by <strong>พี่ที</strong> (<a href="https://oyadata.com" target="_blank">oyadata.com</a>)
-    </div>
+    <div class="container credit-footer no-print"><i class="fas fa-laptop-medical me-1"></i> ระบบ HA Control Chart &copy; <span id="currentYearCredit"></span> | Developed by <strong>พี่ที</strong> (<a href="https://oyadata.com" target="_blank">oyadata.com</a>)</div>
 </div>
 
 <div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
@@ -370,7 +327,7 @@
 <div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
-            <div class="modal-header modal-header-target"><h5 class="modal-title"><i class="fas fa-bullseye me-2"></i>ตั้งเป้าหมาย</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header modal-header-target"><h5 class="modal-title"><i class="fas fa-bullseye me-2"></i>ตั้งเป้าหมายส่วนกลาง</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="targetForm">
                     <input type="hidden" id="targetType">
@@ -384,15 +341,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// =========================================================================
 const APP_PASSWORD = '1234'; 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIPmyGhOxhpENsiDFXttLwJlxS0VlcaZfTkiXF2hGoeK2wcVXONCVeW0lB9CKQ8kr8/exec';
 
-// ตั้งค่าปีปัจจุบันให้ Footer
 document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
 
 let globalData = []; let charts = {}; let currentEditId = null; let dataModal = null; let targetModal = null;
-let chartTargets = JSON.parse(localStorage.getItem('healthcareTargets')) || { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 };
+let chartTargets = { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 }; // เตรียมค่าตั้งต้น
 const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const fullMonthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
@@ -437,9 +392,7 @@ function checkLoginStatus() {
         document.getElementById('mainApp').style.display = 'block';
         document.getElementById('displayAgencyName').textContent = agencyName;
         document.getElementById('pdfAgencyName').textContent = agencyName;
-        
-        applyPermissions(); 
-        initSystem(); 
+        applyPermissions(); initSystem(); 
     }
 }
 
@@ -448,14 +401,11 @@ function handleLogin(event) {
     const agency = document.getElementById('inputAgency').value;
     const password = document.getElementById('inputPassword').value;
     const cleanAgency = agency ? agency.trim() : '';
-    
     if (password === APP_PASSWORD && cleanAgency !== '') {
-        sessionStorage.setItem('ha_logged_in', 'true'); 
-        localStorage.setItem('ha_agency_name', cleanAgency);
+        sessionStorage.setItem('ha_logged_in', 'true'); localStorage.setItem('ha_agency_name', cleanAgency);
         Swal.fire({ icon: 'success', title: 'ยินดีต้อนรับ', text: `เข้าสู่ระบบ: ${cleanAgency}`, timer: 1500, showConfirmButton: false }).then(() => { checkLoginStatus(); });
     } else { 
-        Swal.fire('ข้อผิดพลาด', 'รหัสผ่านไม่ถูกต้อง หรือยังไม่ได้เลือกหอผู้ป่วย', 'error'); 
-        document.getElementById('inputPassword').value = ''; 
+        Swal.fire('ข้อผิดพลาด', 'รหัสผ่านไม่ถูกต้อง หรือยังไม่ได้เลือกหอผู้ป่วย', 'error'); document.getElementById('inputPassword').value = ''; 
     }
 }
 
@@ -467,26 +417,33 @@ function initSystem() {
     document.getElementById('dataDenominator').addEventListener('input', calculateRate); document.getElementById('dataCases').addEventListener('input', calculateRate);
 }
 
+// โหลดข้อมูลทั้งหมด (รวมถึง Target ส่วนกลาง) จากเซิร์ฟเวอร์
 async function loadDataFromServer() {
     Swal.fire({ title: 'กำลังโหลดข้อมูลจากคลาวด์...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
     try {
         const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
-        const rawText = await response.text(); let data;
-        try { data = JSON.parse(rawText); } catch (e) { throw new Error("รูปแบบข้อมูลขัดข้อง (หัวข้อแถวที่ 1 ใน Sheet ไม่ถูกต้อง)"); }
-        if (!Array.isArray(data)) { data = []; }
+        const rawText = await response.text(); 
+        let responseData;
+        try { responseData = JSON.parse(rawText); } catch (e) { throw new Error("รูปแบบข้อมูลขัดข้อง"); }
+        
+        // แยกข้อมูลออกจาก Object ที่ฝั่ง Backend ส่งมา
+        let dataArray = [];
+        if (Array.isArray(responseData)) { dataArray = responseData; } 
+        else if (responseData && responseData.data) {
+            dataArray = responseData.data;
+            if (responseData.targets) { chartTargets = responseData.targets; } // ดึงเป้าหมายส่วนกลางมาใช้
+        }
 
         const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
         const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
 
-        let rawParsed = data.map(item => {
+        let rawParsed = dataArray.map(item => {
             return {
                 id: (item.id || item.ID || item.Id || Date.now()).toString(),
                 agency: (item.agency || item.Agency || item.AGENCY || '').toString().trim(),
                 type: item.type || item.Type || item.TYPE || '',
-                month: parseInt(item.month || item.Month || 0),
-                year: parseInt(item.year || item.Year || 0),
-                denominator: parseFloat(item.denominator || item.Denominator || 0),
-                cases: parseFloat(item.cases || item.Cases || 0),
+                month: parseInt(item.month || item.Month || 0), year: parseInt(item.year || item.Year || 0),
+                denominator: parseFloat(item.denominator || item.Denominator || 0), cases: parseFloat(item.cases || item.Cases || 0),
                 rate: parseFloat(item.rate || item.Rate || 0)
             };
         }).filter(d => d.type !== '');
@@ -495,16 +452,11 @@ async function loadDataFromServer() {
             let aggregated = {};
             rawParsed.forEach(d => {
                 let key = `${d.type}-${d.year}-${d.month}`;
-                if (!aggregated[key]) {
-                    aggregated[key] = {
-                        id: 'admin-' + key, agency: 'ภาพรวมโรงพยาบาล', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0
-                    };
-                }
+                if (!aggregated[key]) { aggregated[key] = { id: 'admin-' + key, agency: 'ภาพรวมโรงพยาบาล', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0 }; }
                 aggregated[key].denominator += d.denominator; aggregated[key].cases += d.cases;
             });
             globalData = Object.values(aggregated).map(d => {
-                if (d.denominator > 0) { d.rate = d.type === 'SSI' ? (d.cases / d.denominator) * 100 : (d.cases / d.denominator) * 1000; }
-                return d;
+                if (d.denominator > 0) { d.rate = d.type === 'SSI' ? (d.cases / d.denominator) * 100 : (d.cases / d.denominator) * 1000; } return d;
             });
         } else {
             globalData = rawParsed.filter(d => d.agency === currentAgency);
@@ -517,8 +469,7 @@ async function loadDataFromServer() {
 function refreshUI() {
     const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI'];
     types.forEach(type => { renderTable(type); updateChart(type); });
-    updateFilterYears(); 
-    updateDashboard(); 
+    updateFilterYears(); updateDashboard(); 
 }
 
 function initializeYearSelect() {
@@ -536,17 +487,9 @@ function updateFilterYears() {
 
     const dashSelect = document.getElementById('dashboardYearFilter');
     if(dashSelect) {
-        const currentDash = dashSelect.value;
-        dashSelect.innerHTML = '';
-        years.forEach(year => { 
-            const option = document.createElement('option'); option.value = year; option.textContent = 'ข้อมูลปี ' + year; 
-            dashSelect.appendChild(option); 
-        });
-        if(currentDash && years.includes(parseInt(currentDash))) {
-            dashSelect.value = currentDash;
-        } else {
-            dashSelect.value = years[0]; 
-        }
+        const currentDash = dashSelect.value; dashSelect.innerHTML = '';
+        years.forEach(year => { const option = document.createElement('option'); option.value = year; option.textContent = 'ข้อมูลปี ' + year; dashSelect.appendChild(option); });
+        if(currentDash && years.includes(parseInt(currentDash))) { dashSelect.value = currentDash; } else { dashSelect.value = years[0]; }
     }
 
     ['vapYearFilter', 'cautiYearFilter', 'cabsiYearFilter', 'ssiYearFilter'].forEach(filterId => {
@@ -568,11 +511,26 @@ function openTargetModal(type) {
     document.getElementById('targetValue').value = chartTargets[type] || 0; targetModal.show();
 }
 
-function saveTarget() {
+// อัปเกรดระบบบันทึก Target ส่วนกลาง
+async function saveTarget() {
     const type = document.getElementById('targetType').value; const value = parseFloat(document.getElementById('targetValue').value);
     if (isNaN(value) || value < 0) { Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลขที่ถูกต้อง', 'warning'); return; }
-    chartTargets[type] = value; localStorage.setItem('healthcareTargets', JSON.stringify(chartTargets));
-    targetModal.hide(); Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', text: `ตั้งเป้าหมายส่วนกลาง ${type} = ${value}`, timer: 1500, showConfirmButton: false }); updateChart(type); 
+    
+    Swal.fire({ title: 'กำลังบันทึกเป้าหมายส่วนกลาง...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    
+    try {
+        await fetch(SCRIPT_URL, { 
+            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+            body: JSON.stringify({ action: 'saveTarget', type: type, value: value }) 
+        });
+        
+        chartTargets[type] = value; 
+        targetModal.hide(); 
+        Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', text: `ทุกคนในระบบจะเห็นเป้าหมายใหม่ทันที`, timer: 2000, showConfirmButton: false }); 
+        updateChart(type); 
+    } catch (e) {
+        Swal.fire('ข้อผิดพลาด', 'บันทึกเป้าหมายไม่สำเร็จ: ' + e.message, 'error');
+    }
 }
 
 function openModal(type, id = null) {
@@ -596,12 +554,10 @@ async function saveData() {
     const type = document.getElementById('dataType').value; const id = document.getElementById('dataId').value;
     const month = parseInt(document.getElementById('dataMonth').value); const year = parseInt(document.getElementById('dataYear').value);
     const denominator = parseFloat(document.getElementById('dataDenominator').value); const cases = parseFloat(document.getElementById('dataCases').value);
-    
     if (!type || !month || !year || isNaN(denominator) || isNaN(cases)) { Swal.fire('ระวัง', 'กรุณากรอกข้อมูลให้ครบ', 'warning'); return; }
     
     let rate = 0; if (denominator > 0) { rate = type === 'SSI' ? ((cases / denominator) * 100) : ((cases / denominator) * 1000); }
     const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
-    
     const newData = { id: id || Date.now().toString(), agency: currentAgency, type, month, year, denominator, cases, rate };
 
     Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
@@ -628,20 +584,10 @@ function renderTable(type) {
     data.sort((a, b) => { if (a.year !== b.year) return b.year - a.year; return b.month - a.month; });
     data.forEach(item => {
         const row = document.createElement('tr');
-        
         let actionHtml = '';
-        if (isAdmin) {
-            actionHtml = `<span class="badge bg-secondary">ดูภาพรวม</span>`;
-        } else {
-            actionHtml = `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${item.type}', '${item.id}')"><i class="fas fa-edit"></i></button>
-                          <button class="btn btn-sm btn-outline-danger" onclick="deleteData('${item.id}', '${item.type}')"><i class="fas fa-trash"></i></button>`;
-        }
-
-        row.innerHTML = `<td class="align-middle">${fullMonthNames[item.month - 1]} ${item.year}</td>
-                         <td class="align-middle">${item.denominator.toLocaleString()}</td>
-                         <td class="align-middle">${item.cases}</td>
-                         <td class="align-middle text-primary"><strong>${item.rate.toFixed(2)}</strong><small class="text-muted ms-1">${item.type === 'SSI' ? '%' : '/ 1000'}</small></td>
-                         <td class="no-print text-center align-middle">${actionHtml}</td>`;
+        if (isAdmin) { actionHtml = `<span class="badge bg-secondary">ดูภาพรวม</span>`; } 
+        else { actionHtml = `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${item.type}', '${item.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteData('${item.id}', '${item.type}')"><i class="fas fa-trash"></i></button>`; }
+        row.innerHTML = `<td class="align-middle">${fullMonthNames[item.month - 1]} ${item.year}</td><td class="align-middle">${item.denominator.toLocaleString()}</td><td class="align-middle">${item.cases}</td><td class="align-middle text-primary"><strong>${item.rate.toFixed(2)}</strong><small class="text-muted ms-1">${item.type === 'SSI' ? '%' : '/ 1000'}</small></td><td class="no-print text-center align-middle">${actionHtml}</td>`;
         tbody.appendChild(row);
     });
 }
@@ -671,7 +617,6 @@ function createControlChart(ctx, type, labels, rates, viewType) {
 function updateDashboard() {
     const dashSelect = document.getElementById('dashboardYearFilter');
     const selectedYear = dashSelect ? parseInt(dashSelect.value) : new Date().getFullYear();
-
     const filteredData = globalData.filter(d => d.year === selectedYear);
 
     const totals = { 'VAP': { cases: 0, denom: 0 }, 'CA-UTI': { cases: 0, denom: 0 }, 'CA-BSI': { cases: 0, denom: 0 }, 'SSI': { cases: 0, denom: 0 } };
@@ -699,26 +644,12 @@ function updateOverviewChart(selectedYear) {
         const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b']; 
         return { 
             label: type, 
-            data: Array(12).fill(null).map((_, i) => { 
-                const monthData = typeData.find(d => d.month === i + 1); 
-                return monthData ? monthData.rate : null; 
-            }), 
-            borderColor: colors[index], 
-            backgroundColor: colors[index] + '20', 
-            tension: 0.4 
+            data: Array(12).fill(null).map((_, i) => { const monthData = typeData.find(d => d.month === i + 1); return monthData ? monthData.rate : null; }), 
+            borderColor: colors[index], backgroundColor: colors[index] + '20', tension: 0.4 
         }; 
     });
     
-    charts.overview = new Chart(context, { 
-        type: 'line', 
-        data: { labels: monthNames, datasets: datasets }, 
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { title: { display: true, text: `แนวโน้มอัตราการติดเชื้อ ภาพรวมปี ${selectedYear}`, font: { size: 16 } } }, 
-            scales: { y: { beginAtZero: true } } 
-        } 
-    });
+    charts.overview = new Chart(context, { type: 'line', data: { labels: monthNames, datasets: datasets }, options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `แนวโน้มอัตราการติดเชื้อ ภาพรวมปี ${selectedYear}`, font: { size: 16 } } }, scales: { y: { beginAtZero: true } } } });
 }
 
 function exportData(type) {
