@@ -34,6 +34,7 @@
         .filter-section { background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
         .credit-footer { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
         .credit-footer a { color: white; text-decoration: none; font-weight: 600; }
+        .admin-filter-box { background: #fff3cd; border: 1px solid #ffe69c; border-radius: 10px; padding: 10px 20px; display: inline-block; margin-top: 10px; }
         @media print { .no-print { display: none !important; } .chart-container { height: 350px !important; } }
     </style>
 </head>
@@ -49,10 +50,10 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="mb-3 text-start">
                 <label class="form-label fw-bold">เลือกหน่วยงาน / หอผู้ป่วย</label>
-              <select class="form-select form-select-custom" id="inputAgency" required>
+                <select class="form-select" id="inputAgency" required>
                     <option value="" disabled selected>-- กรุณาเลือกหอผู้ป่วย --</option>
-                    <optgroup label="อื่นๆ / ผู้ดูแลระบบ">
-                        <option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (ดูภาพรวมทั้ง รพ.)</option>
+                    <optgroup label="ผู้ดูแลระบบ">
+                        <option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (Admin)</option>
                     </optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยอายุรกรรม">
                         <option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option>
@@ -77,7 +78,7 @@
                         <option value="หอผู้ป่วยกระดูกชาย">หอผู้ป่วยกระดูกชาย</option><option value="หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง">หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง</option>
                         <option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.8">หอผู้ป่วยพิเศษศัลยกรรม Ex.8</option>
                     </optgroup>
-                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วย โสต ศอ นาสิก จักษุ">
+                    <optgroup label="กลุ่มงานการพยาบาล โสต ศอ นาสิก จักษุ">
                         <option value="หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3">หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3</option><option value="หอผู้ป่วยพิเศษ EENT">หอผู้ป่วยพิเศษ EENT</option>
                     </optgroup>
                 </select>
@@ -94,7 +95,15 @@
         <div class="text-center mb-4 no-print">
             <h1 class="header-title mb-2"><i class="fas fa-layer-group me-2"></i>Dynamic HA Control Chart</h1>
             <div class="agency-badge"><i class="far fa-building me-2"></i><span id="displayAgencyName">ชื่อหน่วยงาน</span></div>
-            <div class="mt-2"><button class="btn btn-sm btn-outline-secondary me-2" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</button></div>
+            
+            <div id="adminFilterContainer" class="admin-filter-box" style="display: none;">
+                <label class="form-label fw-bold text-dark mb-1 small"><i class="fas fa-search me-1"></i> แอดมิน: เลือกดูข้อมูลรายตึก</label>
+                <select class="form-select form-select-sm border-warning fw-bold" id="adminAgencySelect" onchange="onAdminAgencyChange()">
+                    <option value="ภาพรวมโรงพยาบาล">📊 ดูภาพรวมทั้งโรงพยาบาล</option>
+                </select>
+            </div>
+
+            <div class="mt-3"><button class="btn btn-sm btn-outline-secondary me-2" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</button></div>
         </div>
 
         <ul class="nav nav-pills justify-content-center mb-4 no-print" id="dynamicTabs" role="tablist"></ul>
@@ -181,7 +190,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // =========================================================================
-// URL ของพี่ที ถูกใส่ไว้ตรงนี้แล้วเรียบร้อยครับ!
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIPmyGhOxhpENsiDFXttLwJlxS0VlcaZfTkiXF2hGoeK2wcVXONCVeW0lB9CKQ8kr8/exec';
 const APP_PASSWORD = '1234'; 
 // =========================================================================
@@ -189,7 +197,11 @@ const APP_PASSWORD = '1234';
 document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
 const colorPalette = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#f6d365', '#ff0844', '#00c6fb', '#c471ed'];
 
-let globalData = []; let globalIndicators = []; let chartTargets = {}; let charts = {}; 
+let allHospitalData = []; // เก็บข้อมูลดิบทั้งหมด
+let globalData = [];      // เก็บข้อมูลที่ผ่านการกรองแล้วเพื่อแสดงผล
+let globalIndicators = []; 
+let chartTargets = {}; 
+let charts = {}; 
 let dataModal, targetModal, indicatorModal;
 const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const fullMonthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
@@ -230,31 +242,73 @@ async function loadDataFromServer() {
         
         globalIndicators = responseData.indicators || [];
         chartTargets = responseData.targets || {};
-        
         const currentAgency = localStorage.getItem('ha_agency_name');
         const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
         
-        let rawParsed = (responseData.data || []).map(item => ({
+        // เก็บข้อมูลดิบทั้งหมดไว้ใน allHospitalData
+        allHospitalData = (responseData.data || []).map(item => ({
             id: String(item.id || Date.now()), agency: String(item.agency || ''), type: item.type,
             month: parseInt(item.month), year: parseInt(item.year),
             denominator: parseFloat(item.denominator), cases: parseFloat(item.cases), rate: parseFloat(item.rate)
         }));
 
         if (isAdmin) {
-            let aggregated = {};
-            rawParsed.forEach(d => {
-                let key = `${d.type}-${d.year}-${d.month}`;
-                if (!aggregated[key]) aggregated[key] = { id: 'admin-'+key, agency: 'ภาพรวม', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0 };
-                aggregated[key].denominator += d.denominator; aggregated[key].cases += d.cases;
-            });
-            globalData = Object.values(aggregated).map(d => {
-                let ind = globalIndicators.find(i => i.code === d.type); let multi = ind ? ind.multiplier : 1000;
-                d.rate = d.denominator > 0 ? (d.cases / d.denominator) * multi : 0; return d;
-            });
-        } else { globalData = rawParsed.filter(d => d.agency === currentAgency); }
+            populateAdminAgencyFilter();
+            processDataForView('ภาพรวมโรงพยาบาล'); // โหลดครั้งแรกให้ดูภาพรวม
+        } else { 
+            processDataForView(currentAgency); 
+        }
 
         buildDynamicUI(); Swal.close();
-    } catch (e) { Swal.fire('Error', 'โหลดข้อมูลล้มเหลว กรุณาตรวจสอบลิงก์ Google Sheet', 'error'); console.error(e); }
+    } catch (e) { Swal.fire('Error', 'โหลดข้อมูลล้มเหลว', 'error'); console.error(e); }
+}
+
+// ฟังก์ชันดึงรายชื่อตึกมาใส่ใน Dropdown ของ Admin
+function populateAdminAgencyFilter() {
+    const select = document.getElementById('adminAgencySelect');
+    document.getElementById('adminFilterContainer').style.display = 'block';
+
+    let agencies = [...new Set(allHospitalData.map(d => d.agency))].filter(a => a && a !== 'ภาพรวมโรงพยาบาล' && a !== 'ผู้ดูแลระบบกลาง (Admin)');
+    agencies.sort();
+
+    select.innerHTML = '<option value="ภาพรวมโรงพยาบาล">📊 ดูภาพรวมทั้งโรงพยาบาล</option>';
+    agencies.forEach(agency => {
+        select.innerHTML += `<option value="${agency}">🏥 ${agency}</option>`;
+    });
+}
+
+// ฟังก์ชันประมวลผลข้อมูลตามตึกที่เลือก
+function processDataForView(selectedAgency) {
+    const isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
+
+    if (isAdmin && selectedAgency === 'ภาพรวมโรงพยาบาล') {
+        let aggregated = {};
+        allHospitalData.forEach(d => {
+            let key = `${d.type}-${d.year}-${d.month}`;
+            if (!aggregated[key]) aggregated[key] = { id: 'admin-'+key, agency: 'ภาพรวมโรงพยาบาล', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0 };
+            aggregated[key].denominator += d.denominator; aggregated[key].cases += d.cases;
+        });
+        globalData = Object.values(aggregated).map(d => {
+            let ind = globalIndicators.find(i => i.code === d.type); let multi = ind ? ind.multiplier : 1000;
+            d.rate = d.denominator > 0 ? (d.cases / d.denominator) * multi : 0; return d;
+        });
+    } else {
+        globalData = allHospitalData.filter(d => d.agency === selectedAgency);
+    }
+}
+
+// ฟังก์ชันเมื่อ Admin เปลี่ยนตึกใน Dropdown
+function onAdminAgencyChange() {
+    const selected = document.getElementById('adminAgencySelect').value;
+    processDataForView(selected);
+
+    document.getElementById('displayAgencyName').textContent = selected === 'ภาพรวมโรงพยาบาล' ? 'ผู้ดูแลระบบกลาง (ดูภาพรวม)' : `ดูข้อมูล: ${selected}`;
+    document.getElementById('pdfAgencyName').textContent = selected === 'ภาพรวมโรงพยาบาล' ? 'ภาพรวมโรงพยาบาล' : selected;
+
+    updateFilterYears();
+    const activeIndicators = globalIndicators.filter(i => i.isActive);
+    activeIndicators.forEach(ind => { renderTable(ind.code); updateChart(ind.code); });
+    updateDashboard();
 }
 
 function buildDynamicUI() {
@@ -413,8 +467,9 @@ function renderTable(type) {
     let tbody = document.querySelector(`#table-${type} tbody`); if(!tbody) return; tbody.innerHTML='';
     let ind = globalIndicators.find(i => i.code === type); let suffix = ind.multiplier==100?'%':'/1000';
     let isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
+    
     data.forEach(d => {
-        let act = isAdmin ? `<span class="badge bg-secondary">ภาพรวม</span>` : `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${type}', '${d.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteData('${d.id}')"><i class="fas fa-trash"></i></button>`;
+        let act = isAdmin ? `<span class="badge bg-secondary">โหมดตรวจสอบข้อมูล</span>` : `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${type}', '${d.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteData('${d.id}')"><i class="fas fa-trash"></i></button>`;
         tbody.innerHTML += `<tr><td>${fullMonthNames[d.month-1]} ${d.year}</td><td>${d.denominator.toLocaleString()}</td><td>${d.cases}</td><td class="text-primary fw-bold">${d.rate.toFixed(2)}<small class="text-muted ms-1">${suffix}</small></td><td class="text-center no-print">${act}</td></tr>`;
     });
 }
