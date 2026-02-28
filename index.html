@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare Control Chart System - HA Standard</title>
+    <title>Healthcare Control Chart System - Dynamic HA</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,35 +26,22 @@
         .btn-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; padding: 10px 25px; font-weight: 500; transition: all 0.3s ease; }
         .btn-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); color: white; }
         .btn-outline-custom { border: 2px solid #667eea; color: #667eea; background: transparent; border-radius: 8px; padding: 8px 20px; font-weight: 500; }
-        .btn-outline-custom:hover { background: #667eea; color: white; }
         .btn-warning-custom { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white; border: none; }
         .btn-pdf { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 500; }
         .table-custom { background: white; border-radius: 10px; overflow: hidden; }
         .table-custom thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .stat-card { background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-left: 5px solid #667eea; }
         .stat-number { font-size: 2.5rem; font-weight: 700; color: #667eea; }
-        .nav-pills .nav-link.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .nav-pills .nav-link.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important;}
         .nav-pills .nav-link { color: #667eea; font-weight: 500; border-radius: 10px; margin: 0 5px; cursor: pointer; }
         .form-select-custom, .form-control-custom { border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px; font-size: 1rem; transition: all 0.3s ease; }
-        .form-control-custom:focus, .form-select-custom:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
         .chart-container { position: relative; height: 400px; margin-top: 20px; }
         .filter-section { background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
         .modal-header-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .modal-header-target { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: white; }
-
-        .btn-add-data, .btn-set-target { display: none; }
-        
-        .ic-guideline-box { border-left: 5px solid #667eea; background: #f8f9fa; padding: 15px 20px; border-radius: 0 10px 10px 0; margin-bottom: 15px; }
-        .ic-title { color: #4f46e5; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; }
-        .ic-formula { background: #e0e7ff; padding: 8px 15px; border-radius: 8px; font-family: monospace; font-size: 1rem; color: #333; margin: 10px 0; border: 1px dashed #667eea; }
-        .ic-criteria { font-size: 0.95rem; color: #555; }
-        .ic-criteria ul { padding-left: 20px; margin-bottom: 0; }
-        .ic-criteria li { margin-bottom: 5px; }
-        
         .credit-footer { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; }
-        .credit-footer a { color: white; text-decoration: none; font-weight: 600; transition: opacity 0.3s; }
-        .credit-footer a:hover { opacity: 0.8; text-decoration: underline; }
-
+        .credit-footer a { color: white; text-decoration: none; font-weight: 600; }
+        .admin-only { display: none; }
+        
         @media print {
             body { background: white; padding: 0; }
             .no-print { display: none !important; }
@@ -70,9 +57,9 @@
 <div id="loginScreen">
     <div class="login-card">
         <div class="mb-4">
-            <i class="fas fa-hospital-user fa-4x text-primary mb-3" style="background: -webkit-linear-gradient(#667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <i class="fas fa-hospital-user fa-4x text-primary mb-3"></i>
             <h3 class="fw-bold">ระบบควบคุมการติดเชื้อ</h3>
-            <p class="text-muted">HA Standard Control Chart</p>
+            <p class="text-muted">Dynamic HA Control Chart</p>
         </div>
         
         <form id="loginForm" onsubmit="handleLogin(event)">
@@ -80,7 +67,7 @@
                 <label class="form-label fw-bold">เลือกหน่วยงาน / หอผู้ป่วย</label>
                 <select class="form-select form-select-custom" id="inputAgency" required>
                     <option value="" disabled selected>-- กรุณาเลือกหอผู้ป่วย --</option>
-                    <optgroup label="อื่นๆ / ผู้ดูแลระบบ"><option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (ดูภาพรวมทั้ง รพ.)</option></optgroup>
+                    <optgroup label="ผู้ดูแลระบบ (ตั้งค่าตัวชี้วัดได้)"><option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (Admin)</option></optgroup>
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยอายุรกรรม">
                         <option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option><option value="หอผู้ป่วย สก.5">หอผู้ป่วย สก.5</option><option value="หอผู้ป่วย สก.6">หอผู้ป่วย สก.6</option><option value="หอผู้ป่วยสงฆ์อาพาธ">หอผู้ป่วยสงฆ์อาพาธ</option><option value="หอผู้ป่วยสงฆ์พิเศษ 2+3">หอผู้ป่วยสงฆ์พิเศษ 2+3</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง">หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน">หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน</option><option value="หอผู้ป่วย Low Immune ธนจ.4">หอผู้ป่วย Low Immune ธนจ.4</option>
                     </optgroup>
@@ -93,15 +80,12 @@
                     <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยออร์โธปิดิกส์">
                         <option value="หอผู้ป่วยกระดูกชาย">หอผู้ป่วยกระดูกชาย</option><option value="หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง">หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง</option><option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.8">หอผู้ป่วยพิเศษศัลยกรรม Ex.8</option>
                     </optgroup>
-                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วย โสต ศอ นาสิก จักษุ">
-                        <option value="หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3">หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3</option><option value="หอผู้ป่วยพิเศษ EENT">หอผู้ป่วยพิเศษ EENT</option>
+                    <optgroup label="กลุ่มงานการพยาบาล โสต ศอ นาสิก จักษุ">
+                        <option value="หอผู้ป่วยสามัญ EENT">หอผู้ป่วยสามัญ EENT</option><option value="หอผู้ป่วยพิเศษ EENT">หอผู้ป่วยพิเศษ EENT</option>
                     </optgroup>
                 </select>
             </div>
-            <div class="mb-4 text-start">
-                <label class="form-label fw-bold">รหัสผ่าน</label>
-                <input type="password" class="form-control form-control-custom" id="inputPassword" required placeholder="ใส่รหัสผ่าน 1234">
-            </div>
+            <div class="mb-4 text-start"><label class="form-label fw-bold">รหัสผ่าน</label><input type="password" class="form-control form-control-custom" id="inputPassword" required placeholder="ใส่รหัสผ่าน 1234"></div>
             <button type="submit" class="btn btn-custom w-100 py-2 fs-5">เข้าสู่ระบบ</button>
             <div class="mt-4 pt-3 border-top text-muted small"><i class="fas fa-code me-1"></i> Developed by <strong>พี่ที</strong> | <a href="https://oyadata.com" target="_blank" class="text-decoration-none text-muted">oyadata.com</a></div>
         </form>
@@ -111,211 +95,72 @@
 <div id="mainApp" style="display: none;">
     <div class="container main-container">
         <div class="text-center mb-4 no-print">
-            <h1 class="header-title mb-2"><i class="fas fa-chart-line me-2"></i>Healthcare Control Chart System</h1>
+            <h1 class="header-title mb-2"><i class="fas fa-layer-group me-2"></i>Dynamic HA Control Chart</h1>
             <div class="agency-badge"><i class="far fa-building me-2"></i><span id="displayAgencyName">ชื่อหน่วยงาน</span></div>
-            <p class="text-muted">ระบบติดตามและวิเคราะห์อัตราการติดเชื้อในโรงพยาบาลตามมาตรฐาน HA</p>
-            <button class="btn btn-sm btn-outline-secondary mt-2" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</button>
+            <div class="mt-2">
+                <button class="btn btn-sm btn-outline-secondary me-2" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</button>
+            </div>
         </div>
 
-        <ul class="nav nav-pills justify-content-center mb-4 no-print" id="mainTab" role="tablist">
-            <li class="nav-item"><button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard" type="button"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</button></li>
-            <li class="nav-item"><button class="nav-link" id="vap-tab" data-bs-toggle="pill" data-bs-target="#vap" type="button"><i class="fas fa-lungs me-2"></i>VAP</button></li>
-            <li class="nav-item"><button class="nav-link" id="cauti-tab" data-bs-toggle="pill" data-bs-target="#cauti" type="button"><i class="fas fa-procedures me-2"></i>CA-UTI</button></li>
-            <li class="nav-item"><button class="nav-link" id="cabsi-tab" data-bs-toggle="pill" data-bs-target="#cabsi" type="button"><i class="fas fa-heartbeat me-2"></i>CA-BSI</button></li>
-            <li class="nav-item"><button class="nav-link" id="ssi-tab" data-bs-toggle="pill" data-bs-target="#ssi" type="button"><i class="fas fa-cut me-2"></i>SSI</button></li>
-            <li class="nav-item"><button class="nav-link" id="manual-tab" data-bs-toggle="pill" data-bs-target="#manual" type="button"><i class="fas fa-book me-2"></i>คู่มือ</button></li>
-        </ul>
+        <ul class="nav nav-pills justify-content-center mb-4 no-print" id="dynamicTabs" role="tablist"></ul>
 
-        <div class="tab-content" id="mainTabContent">
+        <div class="tab-content" id="dynamicTabContent">
+            
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
                 <div class="d-flex justify-content-between align-items-end mb-3 no-print filter-section">
-                    <div style="min-width: 200px;">
-                        <label class="form-label text-muted mb-1 small fw-bold">เลือกปีเพื่อดูภาพรวมกราฟ</label>
-                        <select class="form-select form-select-custom w-100" id="dashboardYearFilter" onchange="updateDashboard()"></select>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-custom" onclick="window.print()"><i class="fas fa-print me-2"></i>ปริ้นท์รายงาน</button>
-                        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
-                    </div>
+                    <div style="min-width: 200px;"><label class="form-label fw-bold small">เลือกปีเพื่อดูภาพรวมกราฟ</label><select class="form-select w-100" id="dashboardYearFilter" onchange="updateDashboard()"></select></div>
+                    <div class="d-flex gap-2"><button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button></div>
                 </div>
 
                 <div id="pdfExportArea" class="bg-white p-4" style="border-radius: 15px;">
                     <div class="text-center mb-4 d-none d-print-block" id="pdfHeader" style="display: none;">
-                        <h2 class="fw-bold text-dark">รายงานอัตราการติดเชื้อในโรงพยาบาล (Control Chart)</h2>
-                        <h4 class="text-primary mt-2">หน่วยงาน: <span id="pdfAgencyName"></span></h4>
-                        <p class="text-muted">ข้อมูล ณ วันที่ <span id="currentDatePDF"></span></p>
-                        <hr>
+                        <h2 class="fw-bold text-dark">รายงานอัตราการติดเชื้อ (Control Chart)</h2>
+                        <h4 class="text-primary mt-2">หน่วยงาน: <span id="pdfAgencyName"></span></h4><p class="text-muted">ข้อมูล ณ วันที่ <span id="currentDatePDF"></span></p><hr>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-md-3 col-6 mb-3"><div class="stat-card"><div class="stat-number" id="totalVAP">0</div><div class="text-muted">VAP Cases</div><small class="text-success" id="vapRate">0 per 1000</small></div></div>
-                        <div class="col-md-3 col-6 mb-3"><div class="stat-card" style="border-left-color: #f093fb;"><div class="stat-number" style="color: #f093fb;" id="totalCAUTI">0</div><div class="text-muted">CA-UTI Cases</div><small class="text-success" id="cautiRate">0 per 1000</small></div></div>
-                        <div class="col-md-3 col-6 mb-3"><div class="stat-card" style="border-left-color: #4facfe;"><div class="stat-number" style="color: #4facfe;" id="totalCABSI">0</div><div class="text-muted">CA-BSI Cases</div><small class="text-success" id="cabsiRate">0 per 1000</small></div></div>
-                        <div class="col-md-3 col-6 mb-3"><div class="stat-card" style="border-left-color: #43e97b;"><div class="stat-number" style="color: #43e97b;" id="totalSSI">0</div><div class="text-muted">SSI Cases</div><small class="text-success" id="ssiRate">0%</small></div></div>
-                    </div>
+                    
+                    <div class="row mb-4" id="dashboardCardsContainer"></div>
+                    
                     <div class="card card-custom mb-4" style="box-shadow: none; border: 1px solid #eee;">
-                        <div class="card-header card-header-custom text-dark" style="background: #f8f9fa;"><i class="fas fa-chart-area me-2"></i>ภาพรวมแนวโน้มอัตราการติดเชื้อ (Overview)</div>
+                        <div class="card-header card-header-custom text-dark" style="background: #f8f9fa;"><i class="fas fa-chart-area me-2"></i>ภาพรวมแนวโน้มอัตราการติดเชื้อ</div>
                         <div class="card-body"><div class="chart-container"><canvas id="overviewChart"></canvas></div></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="vap" role="tabpanel">
+            <div class="tab-pane fade" id="adminSettings" role="tabpanel">
                 <div class="card card-custom">
-                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <span><i class="fas fa-lungs me-2"></i>Ventilator-Associated Pneumonia (VAP)</span>
-                        <div>
-                            <button class="btn btn-warning btn-sm no-print text-dark fw-bold me-2 btn-set-target" onclick="openTargetModal('VAP')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมาย</button>
-                            <button class="btn btn-light btn-sm no-print text-dark btn-add-data" onclick="openModal('VAP')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>
-                        </div>
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-cogs me-2"></i>จัดการตัวชี้วัด (Indicator Settings)</span>
+                        <button class="btn btn-warning btn-sm fw-bold" onclick="openIndicatorModal()"><i class="fas fa-plus me-1"></i>เพิ่มตัวชี้วัดใหม่</button>
                     </div>
                     <div class="card-body">
-                        <div class="filter-section no-print">
-                            <div class="row g-3">
-                                <div class="col-md-4"><label class="form-label">เลือกปี</label><select class="form-control form-control-custom" id="vapYearFilter" onchange="filterData('VAP')"><option value="all">ทั้งหมด</option></select></div>
-                                <div class="col-md-4"><label class="form-label">ดูแบบ</label><select class="form-control form-control-custom" id="vapViewType" onchange="updateChart('VAP')"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
-                                <div class="col-md-4 d-flex align-items-end"><button class="btn btn-custom w-100" onclick="exportData('VAP')"><i class="fas fa-download me-1"></i>Export CSV</button></div>
-                            </div>
-                        </div>
-                        <div class="chart-container"><canvas id="vapChart"></canvas></div>
-                        <div class="table-responsive mt-4">
-                            <table class="table table-custom table-hover" id="vapTable">
-                                <thead><tr><th>เดือน/ปี</th><th>Ventilator Days</th><th>VAP Cases</th><th>Rate (per 1000)</th><th class="no-print text-center">จัดการ</th></tr></thead><tbody></tbody>
+                        <div class="alert alert-info small"><i class="fas fa-info-circle me-1"></i> หากปิดสถานะ (Inactive) ตัวชี้วัดนั้นจะหายไปจากหน้าจอพยาบาล แต่ข้อมูลเก่าจะยังคงถูกเก็บไว้ในฐานข้อมูล</div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" id="indicatorTable">
+                                <thead class="table-light"><tr><th>รหัส (Code)</th><th>ชื่อตัวชี้วัด (Name)</th><th>สูตรคำนวณ</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+                                <tbody></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="cauti" role="tabpanel">
-                <div class="card card-custom">
-                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <span><i class="fas fa-procedures me-2"></i>Catheter-Associated UTI (CA-UTI)</span>
-                        <div>
-                            <button class="btn btn-warning btn-sm no-print text-dark fw-bold me-2 btn-set-target" onclick="openTargetModal('CA-UTI')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมาย</button>
-                            <button class="btn btn-light btn-sm no-print text-dark btn-add-data" onclick="openModal('CA-UTI')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="filter-section no-print">
-                            <div class="row g-3">
-                                <div class="col-md-4"><label class="form-label">เลือกปี</label><select class="form-control form-control-custom" id="cautiYearFilter" onchange="filterData('CA-UTI')"><option value="all">ทั้งหมด</option></select></div>
-                                <div class="col-md-4"><label class="form-label">ดูแบบ</label><select class="form-control form-control-custom" id="cautiViewType" onchange="updateChart('CA-UTI')"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
-                                <div class="col-md-4 d-flex align-items-end"><button class="btn btn-custom w-100" onclick="exportData('CA-UTI')"><i class="fas fa-download me-1"></i>Export CSV</button></div>
-                            </div>
-                        </div>
-                        <div class="chart-container"><canvas id="cautiChart"></canvas></div>
-                        <div class="table-responsive mt-4">
-                            <table class="table table-custom table-hover" id="cautiTable">
-                                <thead><tr><th>เดือน/ปี</th><th>Catheter Days</th><th>CA-UTI Cases</th><th>Rate (per 1000)</th><th class="no-print text-center">จัดการ</th></tr></thead><tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="cabsi" role="tabpanel">
-                <div class="card card-custom">
-                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <span><i class="fas fa-heartbeat me-2"></i>Catheter-Associated BSI (CLABSI)</span>
-                        <div>
-                            <button class="btn btn-warning btn-sm no-print text-dark fw-bold me-2 btn-set-target" onclick="openTargetModal('CA-BSI')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมาย</button>
-                            <button class="btn btn-light btn-sm no-print text-dark btn-add-data" onclick="openModal('CA-BSI')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="filter-section no-print">
-                            <div class="row g-3">
-                                <div class="col-md-4"><label class="form-label">เลือกปี</label><select class="form-control form-control-custom" id="cabsiYearFilter" onchange="filterData('CA-BSI')"><option value="all">ทั้งหมด</option></select></div>
-                                <div class="col-md-4"><label class="form-label">ดูแบบ</label><select class="form-control form-control-custom" id="cabsiViewType" onchange="updateChart('CA-BSI')"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
-                                <div class="col-md-4 d-flex align-items-end"><button class="btn btn-custom w-100" onclick="exportData('CA-BSI')"><i class="fas fa-download me-1"></i>Export CSV</button></div>
-                            </div>
-                        </div>
-                        <div class="chart-container"><canvas id="cabsiChart"></canvas></div>
-                        <div class="table-responsive mt-4">
-                            <table class="table table-custom table-hover" id="cabsiTable">
-                                <thead><tr><th>เดือน/ปี</th><th>Central Line Days</th><th>CA-BSI Cases</th><th>Rate (per 1000)</th><th class="no-print text-center">จัดการ</th></tr></thead><tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="ssi" role="tabpanel">
-                <div class="card card-custom">
-                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <span><i class="fas fa-cut me-2"></i>Surgical Site Infection (SSI)</span>
-                        <div>
-                            <button class="btn btn-warning btn-sm no-print text-dark fw-bold me-2 btn-set-target" onclick="openTargetModal('SSI')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมาย</button>
-                            <button class="btn btn-light btn-sm no-print text-dark btn-add-data" onclick="openModal('SSI')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="filter-section no-print">
-                            <div class="row g-3">
-                                <div class="col-md-4"><label class="form-label">เลือกปี</label><select class="form-control form-control-custom" id="ssiYearFilter" onchange="filterData('SSI')"><option value="all">ทั้งหมด</option></select></div>
-                                <div class="col-md-4"><label class="form-label">ดูแบบ</label><select class="form-control form-control-custom" id="ssiViewType" onchange="updateChart('SSI')"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
-                                <div class="col-md-4 d-flex align-items-end"><button class="btn btn-custom w-100" onclick="exportData('SSI')"><i class="fas fa-download me-1"></i>Export CSV</button></div>
-                            </div>
-                        </div>
-                        <div class="chart-container"><canvas id="ssiChart"></canvas></div>
-                        <div class="table-responsive mt-4">
-                            <table class="table table-custom table-hover" id="ssiTable">
-                                <thead><tr><th>เดือน/ปี</th><th>จำนวนผ่าตัด</th><th>SSI Cases</th><th>Rate (%)</th><th class="no-print text-center">จัดการ</th></tr></thead><tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="manual" role="tabpanel">
-                <div class="row">
-                    <div class="col-lg-4 mb-4">
-                        <div class="card card-custom h-100">
-                            <div class="card-header card-header-custom"><i class="fas fa-cogs me-2"></i>คำแนะนำการใช้ระบบ</div>
-                            <div class="card-body ic-criteria">
-                                <ul>
-                                    <li><strong>พยาบาลหอผู้ป่วย:</strong> บันทึกจำนวน Denominator และ Numerator ในแต่ละเดือน ระบบจะคำนวณ Rate ให้อัตโนมัติ</li>
-                                    <li><strong>Admin กลาง (ICN):</strong> ตั้ง Target เปรียบเทียบ และสามารถดูภาพรวมผลรวมของทั้ง รพ. ได้</li>
-                                </ul>
-                                <hr>
-                                <ul>
-                                    <li><strong>เส้น Target (สีส้ม):</strong> เป้าหมายที่ รพ. กำหนด</li>
-                                    <li><strong>เส้น Mean (สีน้ำเงิน):</strong> ค่าเฉลี่ยของข้อมูล</li>
-                                    <li><strong>เส้น UCL / LCL (สีแดง):</strong> ขีดจำกัดทางสถิติ (Control Limits)</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 mb-4">
-                        <div class="card card-custom h-100">
-                            <div class="card-header card-header-custom" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);"><i class="fas fa-book-medical me-2"></i>สูตรคำนวณ</div>
-                            <div class="card-body">
-                                <div class="ic-guideline-box"><div class="ic-title"><i class="fas fa-lungs me-2"></i>VAP</div><div class="ic-formula text-center"><strong>Rate</strong> = (VAP / Ventilator Days) × 1,000</div></div>
-                                <div class="ic-guideline-box" style="border-left-color: #f093fb;"><div class="ic-title" style="color: #f093fb;"><i class="fas fa-procedures me-2"></i>CA-UTI</div><div class="ic-formula text-center"><strong>Rate</strong> = (CA-UTI / Catheter Days) × 1,000</div></div>
-                                <div class="ic-guideline-box" style="border-left-color: #4facfe;"><div class="ic-title" style="color: #4facfe;"><i class="fas fa-heartbeat me-2"></i>CA-BSI</div><div class="ic-formula text-center"><strong>Rate</strong> = (CA-BSI / Central Line Days) × 1,000</div></div>
-                                <div class="ic-guideline-box" style="border-left-color: #43e97b;"><div class="ic-title" style="color: #43e97b;"><i class="fas fa-cut me-2"></i>SSI</div><div class="ic-formula text-center"><strong>Rate</strong> = (SSI / Surgical Cases) × 100</div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-    <div class="container credit-footer no-print"><i class="fas fa-laptop-medical me-1"></i> ระบบ HA Control Chart &copy; <span id="currentYearCredit"></span> | Developed by <strong>พี่ที</strong> (<a href="https://oyadata.com" target="_blank">oyadata.com</a>)</div>
+    <div class="container credit-footer no-print"><i class="fas fa-laptop-medical me-1"></i> ระบบ HA Control Chart &copy; <span id="currentYearCredit"></span> | Developed by <strong>พี่ที</strong></div>
 </div>
 
-<div class="modal fade" id="dataModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="dataModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header modal-header-custom"><h5 class="modal-title" id="modalTitle">เพิ่มข้อมูล</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form id="dataForm">
-                    <input type="hidden" id="dataId"><input type="hidden" id="dataType">
-                    <div class="mb-3"><label class="form-label">เดือน</label><select class="form-control form-control-custom" id="dataMonth" required><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div>
-                    <div class="mb-3"><label class="form-label">ปี</label><select class="form-control form-control-custom" id="dataYear" required></select></div>
-                    <div class="mb-3"><label class="form-label" id="denominatorLabel">Denominator</label><input type="number" class="form-control form-control-custom" id="dataDenominator" required min="0" placeholder="ใส่จำนวน"></div>
-                    <div class="mb-3"><label class="form-label">จำนวนติดเชื้อ (Cases)</label><input type="number" class="form-control form-control-custom" id="dataCases" required min="0" placeholder="ใส่จำนวน"></div>
-                    <div class="mb-3"><label class="form-label">อัตรา (Rate)</label><input type="text" class="form-control form-control-custom" id="dataRate" readonly></div>
+                    <input type="hidden" id="dataId"><input type="hidden" id="dataType"><input type="hidden" id="dataMultiplier">
+                    <div class="row"><div class="col-6 mb-3"><label class="form-label">เดือน</label><select class="form-select" id="dataMonth" required><option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option><option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option><option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option><option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option></select></div><div class="col-6 mb-3"><label class="form-label">ปี</label><select class="form-select" id="dataYear" required></select></div></div>
+                    <div class="mb-3"><label class="form-label">ตัวหาร (Denominator)</label><input type="number" class="form-control" id="dataDenominator" required min="0" placeholder="ใส่จำนวน (เช่น จำนวนวันนอน, เคสผ่าตัด)"></div>
+                    <div class="mb-3"><label class="form-label">จำนวนติดเชื้อ (Numerator)</label><input type="number" class="form-control" id="dataCases" required min="0" placeholder="ใส่จำนวนเคสติดเชื้อ"></div>
+                    <div class="mb-3"><label class="form-label">ผลลัพธ์อัตราส่วน (Rate)</label><input type="text" class="form-control bg-light fw-bold text-primary" id="dataRate" readonly></div>
                 </form>
             </div>
             <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button><button type="button" class="btn btn-custom" onclick="saveData()">บันทึกข้อมูล</button></div>
@@ -323,67 +168,55 @@
     </div>
 </div>
 
-<div class="modal fade" id="targetModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="targetModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
-            <div class="modal-header modal-header-target"><h5 class="modal-title"><i class="fas fa-bullseye me-2"></i>ตั้งเป้าหมายส่วนกลาง</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header modal-header-target"><h5 class="modal-title"><i class="fas fa-bullseye me-2"></i>เป้าหมายกลาง</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <form id="targetForm">
-                    <input type="hidden" id="targetType">
-                    <div class="mb-3"><label class="form-label" id="targetLabel">กำหนดอัตราเป้าหมายส่วนกลาง</label><input type="number" class="form-control form-control-custom" id="targetValue" step="0.01" min="0" placeholder="เช่น 1.5"></div>
-                </form>
+                <input type="hidden" id="targetType">
+                <div class="mb-3"><label class="form-label" id="targetLabel">กำหนดตัวเลขเป้าหมาย</label><input type="number" class="form-control" id="targetValue" step="0.01" min="0"></div>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button><button type="button" class="btn btn-warning-custom" onclick="saveTarget()">บันทึกเป้าหมาย</button></div>
+            <div class="modal-footer"><button type="button" class="btn btn-warning-custom w-100" onclick="saveTarget()">บันทึกเป้าหมาย</button></div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="modal fade" id="indicatorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white"><h5 class="modal-title">ตั้งค่าตัวชี้วัด</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <div class="mb-3"><label class="form-label">รหัสตัวย่อ (Code)</label><input type="text" class="form-control" id="indCode" placeholder="เช่น VAP, HAP, VRE" required style="text-transform: uppercase;"></div>
+                <div class="mb-3"><label class="form-label">ชื่อเต็มตัวชี้วัด (Name)</label><input type="text" class="form-control" id="indName" placeholder="เช่น อัตราปอดอักเสบจากการใส่สาย" required></div>
+                <div class="mb-3"><label class="form-label">สูตรการคำนวณ (Multiplier)</label><select class="form-select" id="indMultiplier"><option value="1000">คูณ 1,000 (Rate per 1000)</option><option value="100">คูณ 100 (คิดเป็น %)</option></select></div>
+                <div class="form-check form-switch mt-4"><input class="form-check-input" type="checkbox" id="indStatus" checked><label class="form-check-label fw-bold">เปิดใช้งาน (Active)</label></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-dark w-100" onclick="saveIndicator()">บันทึกตัวชี้วัด</button></div>
+        </div>
+    </div>
+</div>
+
 <script>
 // =========================================================================
-// ⚠️ สำคัญมาก: เปลี่ยนลิงก์ SCRIPT_URL ด้านล่างเป็นลิงก์ Web App (เวอร์ชันใหม่) ของพี่ทีด้วยนะครับ
+// ⚠️ เปลี่ยนลิงก์ Web App ตรงนี้เป็นของพี่ที (เวอร์ชันใหม่ที่ใส่โค้ด Indicator แล้ว)
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmxMyN-1G4SPoQI4w54fynm8fzdR-CCsiVjXsqyNxr4GLbHZOcKnF-oB9U3fNbigbQ/exec';
 const APP_PASSWORD = '1234'; 
 // =========================================================================
 
 document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
+const colorPalette = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#f6d365', '#ff0844', '#00c6fb', '#c471ed'];
 
-let globalData = []; let charts = {}; let currentEditId = null; let dataModal = null; let targetModal = null;
-let chartTargets = { 'VAP': 0, 'CA-UTI': 0, 'CA-BSI': 0, 'SSI': 0 }; 
+let globalData = []; let globalIndicators = []; let chartTargets = {}; let charts = {}; 
+let dataModal, targetModal, indicatorModal;
 const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const fullMonthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-const lineLabelPlugin = {
-    id: 'lineLabelPlugin',
-    afterDatasetsDraw(chart) {
-        const { ctx } = chart; ctx.save();
-        chart.data.datasets.forEach((dataset, i) => {
-            if (['UCL', 'LCL', 'Target', 'Mean'].includes(dataset.label)) {
-                const meta = chart.getDatasetMeta(i);
-                if (!meta.hidden && dataset.data.length > 0) {
-                    const lastPoint = meta.data[meta.data.length - 1]; let value = dataset.data[dataset.data.length - 1];
-                    ctx.font = 'bold 12px Prompt'; ctx.fillStyle = dataset.borderColor; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-                    ctx.fillText(` ${dataset.label}: ${value.toFixed(2)}`, lastPoint.x + 5, lastPoint.y);
-                }
-            }
-        });
-        ctx.restore();
-    }
-};
-
-document.addEventListener('DOMContentLoaded', function() { checkLoginStatus(); });
-
-function applyPermissions() {
-    const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
-    const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
-    if (isAdmin) {
-        document.querySelectorAll('.btn-add-data').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.btn-set-target').forEach(el => el.style.display = 'inline-block');
-    } else {
-        document.querySelectorAll('.btn-add-data').forEach(el => el.style.display = 'inline-block');
-        document.querySelectorAll('.btn-set-target').forEach(el => el.style.display = 'none');
-    }
-}
+document.addEventListener('DOMContentLoaded', () => { 
+    checkLoginStatus(); 
+    dataModal = new bootstrap.Modal(document.getElementById('dataModal')); 
+    targetModal = new bootstrap.Modal(document.getElementById('targetModal'));
+    indicatorModal = new bootstrap.Modal(document.getElementById('indicatorModal'));
+});
 
 function checkLoginStatus() {
     const isLoggedIn = sessionStorage.getItem('ha_logged_in');
@@ -393,320 +226,299 @@ function checkLoginStatus() {
         document.getElementById('mainApp').style.display = 'block';
         document.getElementById('displayAgencyName').textContent = agencyName;
         document.getElementById('pdfAgencyName').textContent = agencyName;
-        applyPermissions(); initSystem(); 
+        initializeYearSelect(); loadDataFromServer(); 
     }
 }
 
 function handleLogin(event) {
-    event.preventDefault();
-    const agency = document.getElementById('inputAgency').value;
-    const password = document.getElementById('inputPassword').value;
-    const cleanAgency = agency ? agency.trim() : '';
-    if (password === APP_PASSWORD && cleanAgency !== '') {
-        sessionStorage.setItem('ha_logged_in', 'true'); localStorage.setItem('ha_agency_name', cleanAgency);
-        Swal.fire({ icon: 'success', title: 'ยินดีต้อนรับ', text: `เข้าสู่ระบบ: ${cleanAgency}`, timer: 1500, showConfirmButton: false }).then(() => { checkLoginStatus(); });
-    } else { 
-        Swal.fire('ข้อผิดพลาด', 'รหัสผ่านไม่ถูกต้อง หรือยังไม่ได้เลือกหอผู้ป่วย', 'error'); document.getElementById('inputPassword').value = ''; 
-    }
+    event.preventDefault(); const agency = document.getElementById('inputAgency').value; const password = document.getElementById('inputPassword').value;
+    if (password === APP_PASSWORD && agency) {
+        sessionStorage.setItem('ha_logged_in', 'true'); localStorage.setItem('ha_agency_name', agency);
+        Swal.fire({ icon: 'success', title: 'ยินดีต้อนรับ', timer: 1000, showConfirmButton: false }).then(() => checkLoginStatus());
+    } else { Swal.fire('ผิดพลาด', 'รหัสผ่านหรือหน่วยงานไม่ถูกต้อง', 'error'); }
 }
 
 function logout() { sessionStorage.removeItem('ha_logged_in'); location.reload(); }
 
-function initSystem() {
-    dataModal = new bootstrap.Modal(document.getElementById('dataModal')); 
-    targetModal = new bootstrap.Modal(document.getElementById('targetModal'));
-    initializeYearSelect(); loadDataFromServer(); 
-    document.getElementById('dataDenominator').addEventListener('input', calculateRate); 
-    document.getElementById('dataCases').addEventListener('input', calculateRate);
-}
-
 async function loadDataFromServer() {
-    Swal.fire({ title: 'กำลังโหลดข้อมูลจากคลาวด์...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    Swal.fire({ title: 'กำลังโหลดข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     try {
-        const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
-        const rawText = await response.text(); 
-        let responseData;
-        try { responseData = JSON.parse(rawText); } catch (e) { throw new Error("รูปแบบข้อมูลขัดข้อง (กรุณาเช็ค Google Sheet)"); }
+        const response = await fetch(SCRIPT_URL); const responseData = await response.json();
         
-        let dataArray = [];
-        if (Array.isArray(responseData)) { dataArray = responseData; } 
-        else if (responseData && responseData.data) {
-            dataArray = responseData.data;
-            if (responseData.targets) { chartTargets = responseData.targets; } 
-        }
-
-        const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
+        globalIndicators = responseData.indicators || [];
+        chartTargets = responseData.targets || {};
+        
+        const currentAgency = localStorage.getItem('ha_agency_name');
         const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
-
-        let rawParsed = dataArray.map(item => {
-            return {
-                id: (item.id || item.ID || item.Id || Date.now()).toString(),
-                agency: (item.agency || item.Agency || item.AGENCY || '').toString().trim(),
-                type: item.type || item.Type || item.TYPE || '',
-                month: parseInt(item.month || item.Month || 0), year: parseInt(item.year || item.Year || 0),
-                denominator: parseFloat(item.denominator || item.Denominator || 0), cases: parseFloat(item.cases || item.Cases || 0),
-                rate: parseFloat(item.rate || item.Rate || 0)
-            };
-        }).filter(d => d.type !== '');
+        
+        let rawParsed = (responseData.data || []).map(item => ({
+            id: String(item.id || Date.now()), agency: String(item.agency || ''), type: item.type,
+            month: parseInt(item.month), year: parseInt(item.year),
+            denominator: parseFloat(item.denominator), cases: parseFloat(item.cases), rate: parseFloat(item.rate)
+        }));
 
         if (isAdmin) {
             let aggregated = {};
             rawParsed.forEach(d => {
                 let key = `${d.type}-${d.year}-${d.month}`;
-                if (!aggregated[key]) { aggregated[key] = { id: 'admin-' + key, agency: 'ภาพรวมโรงพยาบาล', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0 }; }
+                if (!aggregated[key]) aggregated[key] = { id: 'admin-'+key, agency: 'ภาพรวม', type: d.type, month: d.month, year: d.year, denominator: 0, cases: 0, rate: 0 };
                 aggregated[key].denominator += d.denominator; aggregated[key].cases += d.cases;
             });
             globalData = Object.values(aggregated).map(d => {
-                if (d.denominator > 0) { d.rate = d.type === 'SSI' ? (d.cases / d.denominator) * 100 : (d.cases / d.denominator) * 1000; } return d;
+                let ind = globalIndicators.find(i => i.code === d.type);
+                let multi = ind ? ind.multiplier : 1000;
+                d.rate = d.denominator > 0 ? (d.cases / d.denominator) * multi : 0; return d;
             });
         } else {
             globalData = rawParsed.filter(d => d.agency === currentAgency);
         }
 
-        Swal.close(); refreshUI();
-    } catch (error) { 
-        Swal.fire('ข้อผิดพลาด', 'โหลดข้อมูลไม่สำเร็จ: ตรวจสอบลิงก์ SCRIPT_URL', 'error'); 
-        console.error("Load Error: ", error);
+        buildDynamicUI(); Swal.close();
+    } catch (e) { Swal.fire('Error', 'โหลดข้อมูลล้มเหลว', 'error'); console.error(e); }
+}
+
+// ================= ระบบสร้างหน้าจอแบบอัตโนมัติตามตัวชี้วัด (Dynamic UI Builder) =================
+function buildDynamicUI() {
+    const tabsUl = document.getElementById('dynamicTabs');
+    const contentDiv = document.getElementById('dynamicTabContent');
+    const isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
+    
+    // เคลียร์แท็บเก่า (เก็บเฉพาะ Dashboard และ Admin)
+    tabsUl.innerHTML = `<li class="nav-item"><button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</button></li>`;
+    const oldPanes = contentDiv.querySelectorAll('.dynamic-pane');
+    oldPanes.forEach(p => p.remove());
+
+    const activeIndicators = globalIndicators.filter(i => i.isActive);
+
+    activeIndicators.forEach((ind, index) => {
+        let color = colorPalette[index % colorPalette.length];
+        
+        // 1. สร้างปุ่ม Tab
+        tabsUl.innerHTML += `<li class="nav-item"><button class="nav-link" id="${ind.code}-tab" data-bs-toggle="pill" data-bs-target="#pane-${ind.code}">${ind.code}</button></li>`;
+        
+        // 2. สร้างหน้าต่างเนื้อหา (Tab Pane)
+        let actionButtons = isAdmin 
+            ? `<button class="btn btn-warning btn-sm fw-bold" onclick="openTargetModal('${ind.code}')"><i class="fas fa-bullseye me-1"></i>ตั้งเป้าหมายส่วนกลาง</button>` 
+            : `<button class="btn btn-light btn-sm text-dark" onclick="openModal('${ind.code}')"><i class="fas fa-plus me-1"></i>เพิ่มข้อมูล</button>`;
+
+        let paneHtml = `
+        <div class="tab-pane fade dynamic-pane" id="pane-${ind.code}" role="tabpanel">
+            <div class="card card-custom">
+                <div class="card-header card-header-custom d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: ${color};">
+                    <span><i class="fas fa-chart-bar me-2"></i>${ind.code} - ${ind.name}</span>
+                    <div class="no-print">${actionButtons}</div>
+                </div>
+                <div class="card-body">
+                    <div class="filter-section no-print">
+                        <div class="row g-3">
+                            <div class="col-md-4"><label class="form-label">เลือกปี</label><select class="form-select" id="yearFilter-${ind.code}" onchange="updateChart('${ind.code}')"></select></div>
+                            <div class="col-md-4"><label class="form-label">รูปแบบกราฟ</label><select class="form-select" id="viewType-${ind.code}" onchange="updateChart('${ind.code}')"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
+                            <div class="col-md-4 d-flex align-items-end"><button class="btn btn-outline-secondary w-100" onclick="exportData('${ind.code}')"><i class="fas fa-download me-1"></i>Export CSV</button></div>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="chart-${ind.code}"></canvas></div>
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover" id="table-${ind.code}">
+                            <thead class="table-light"><tr><th>เดือน/ปี</th><th>ตัวหาร (Denominator)</th><th>จำนวนเคส</th><th>Rate</th><th class="no-print text-center">จัดการ</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        contentDiv.insertAdjacentHTML('beforeend', paneHtml);
+    });
+
+    // 3. แสดงปุ่ม Admin ถ้าเป็นผู้ดูแล
+    if (isAdmin) {
+        tabsUl.innerHTML += `<li class="nav-item"><button class="nav-link text-danger fw-bold" data-bs-toggle="pill" data-bs-target="#adminSettings"><i class="fas fa-cogs me-1"></i>ตั้งค่า</button></li>`;
+        renderAdminSettings();
     }
+
+    updateFilterYears();
+    activeIndicators.forEach(ind => { renderTable(ind.code); updateChart(ind.code); });
+    updateDashboard();
 }
 
-function refreshUI() {
-    const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI'];
-    types.forEach(type => { renderTable(type); updateChart(type); });
-    updateFilterYears(); updateDashboard(); 
+function renderAdminSettings() {
+    const tbody = document.querySelector('#indicatorTable tbody'); tbody.innerHTML = '';
+    globalIndicators.forEach(ind => {
+        let status = ind.isActive ? '<span class="badge bg-success">เปิดใช้งาน</span>' : '<span class="badge bg-secondary">ปิด</span>';
+        let multiText = ind.multiplier == 1000 ? 'Rate per 1,000' : '% (เปอร์เซ็นต์)';
+        tbody.innerHTML += `<tr><td><strong>${ind.code}</strong></td><td>${ind.name}</td><td>${multiText}</td><td>${status}</td><td><button class="btn btn-sm btn-outline-dark" onclick="editIndicator('${ind.code}')"><i class="fas fa-edit"></i></button></td></tr>`;
+    });
 }
 
+function openIndicatorModal() {
+    document.getElementById('indCode').value = ''; document.getElementById('indCode').readOnly = false;
+    document.getElementById('indName').value = ''; document.getElementById('indMultiplier').value = '1000';
+    document.getElementById('indStatus').checked = true; indicatorModal.show();
+}
+
+function editIndicator(code) {
+    let ind = globalIndicators.find(i => i.code === code); if(!ind) return;
+    document.getElementById('indCode').value = ind.code; document.getElementById('indCode').readOnly = true;
+    document.getElementById('indName').value = ind.name; document.getElementById('indMultiplier').value = ind.multiplier;
+    document.getElementById('indStatus').checked = ind.isActive; indicatorModal.show();
+}
+
+async function saveIndicator() {
+    let code = document.getElementById('indCode').value.toUpperCase().trim(); let name = document.getElementById('indName').value.trim();
+    let multiplier = parseInt(document.getElementById('indMultiplier').value); let isActive = document.getElementById('indStatus').checked;
+    if(!code || !name) return Swal.fire('แจ้งเตือน', 'กรอกรหัสและชื่อให้ครบ', 'warning');
+    
+    let indObj = { code, name, multiplier, isActive };
+    Swal.fire({ title: 'กำลังบันทึกตัวชี้วัด...', didOpen: () => Swal.showLoading() });
+    try {
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'saveIndicator', indicator: indObj }) });
+        indicatorModal.hide(); Swal.fire('สำเร็จ', 'บันทึกเรียบร้อย', 'success'); loadDataFromServer(); // โหลดใหม่เพื่อวาดหน้าจอใหม่
+    } catch(e) { Swal.fire('ผิดพลาด', 'บันทึกไม่สำเร็จ', 'error'); }
+}
+
+// ================= ระบบบันทึกและคำนวณกราฟ =================
 function initializeYearSelect() {
-    const currentYear = new Date().getFullYear(); const yearSelect = document.getElementById('dataYear');
-    if (!yearSelect) return; yearSelect.innerHTML = '';
-    for (let year = currentYear - 5; year <= currentYear + 1; year++) {
-        const option = document.createElement('option'); option.value = year; option.textContent = year;
-        if (year === currentYear) { option.selected = true; } yearSelect.appendChild(option);
-    }
+    let ySelect = document.getElementById('dataYear'); ySelect.innerHTML=''; let cy = new Date().getFullYear();
+    for(let y=cy-5; y<=cy+1; y++) ySelect.innerHTML += `<option value="${y}" ${y==cy?'selected':''}>${y}</option>`;
 }
 
 function updateFilterYears() {
     const years = [...new Set(globalData.map(d => d.year))].sort((a, b) => b - a);
     if(years.length === 0) years.push(new Date().getFullYear());
-
+    
     const dashSelect = document.getElementById('dashboardYearFilter');
-    if(dashSelect) {
-        const currentDash = dashSelect.value; dashSelect.innerHTML = '';
-        years.forEach(year => { const option = document.createElement('option'); option.value = year; option.textContent = 'ข้อมูลปี ' + year; dashSelect.appendChild(option); });
-        if(currentDash && years.includes(parseInt(currentDash))) { dashSelect.value = currentDash; } else { dashSelect.value = years[0]; }
-    }
-
-    ['vapYearFilter', 'cautiYearFilter', 'cabsiYearFilter', 'ssiYearFilter'].forEach(filterId => {
-        const select = document.getElementById(filterId); if (!select) return;
-        const currentValue = select.value; select.innerHTML = '<option value="all">ทั้งหมด</option>';
-        years.forEach(year => { const option = document.createElement('option'); option.value = year; option.textContent = year; select.appendChild(option); });
-        if (currentValue === 'all' || years.includes(parseInt(currentValue))) select.value = currentValue;
+    if(dashSelect) { let cur = dashSelect.value; dashSelect.innerHTML=''; years.forEach(y => dashSelect.innerHTML += `<option value="${y}">ข้อมูลปี ${y}</option>`); dashSelect.value = cur || years[0]; }
+    
+    globalIndicators.forEach(ind => {
+        let sel = document.getElementById(`yearFilter-${ind.code}`);
+        if(sel) { let cur = sel.value; sel.innerHTML='<option value="all">ดูทุกปี</option>'; years.forEach(y => sel.innerHTML += `<option value="${y}">${y}</option>`); sel.value = cur || 'all'; }
     });
 }
 
+document.getElementById('dataDenominator').addEventListener('input', calculateRate);
+document.getElementById('dataCases').addEventListener('input', calculateRate);
+
 function calculateRate() {
-    const type = document.getElementById('dataType').value; const denominator = parseFloat(document.getElementById('dataDenominator').value) || 0; const cases = parseFloat(document.getElementById('dataCases').value) || 0;
-    let rate = 0; if (denominator > 0) { rate = type === 'SSI' ? ((cases / denominator) * 100).toFixed(2) : ((cases / denominator) * 1000).toFixed(2); }
-    document.getElementById('dataRate').value = rate + (type === 'SSI' ? '%' : ' per 1000');
+    let multi = parseInt(document.getElementById('dataMultiplier').value);
+    let den = parseFloat(document.getElementById('dataDenominator').value)||0; let cases = parseFloat(document.getElementById('dataCases').value)||0;
+    document.getElementById('dataRate').value = den>0 ? ((cases/den)*multi).toFixed(2) + (multi==100?' %':' /1000') : '';
 }
 
-function openTargetModal(type) {
-    document.getElementById('targetType').value = type; 
-    document.getElementById('targetLabel').textContent = `กำหนดอัตราเป้าหมายของ ${type}`;
-    document.getElementById('targetValue').value = chartTargets[type] || 0; 
-    targetModal.show();
-}
-
-async function saveTarget() {
-    const type = document.getElementById('targetType').value; 
-    const value = parseFloat(document.getElementById('targetValue').value);
-    
-    if (isNaN(value) || value < 0) { 
-        Swal.fire('แจ้งเตือน', 'กรุณาระบุตัวเลขให้ถูกต้อง', 'warning'); return; 
-    }
-    
-    Swal.fire({ title: 'กำลังบันทึกเป้าหมาย...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    
-    try {
-        const response = await fetch(SCRIPT_URL, { 
-            method: 'POST', 
-            redirect: 'follow', 
-            headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-            body: JSON.stringify({ action: 'saveTarget', type: type, value: value }) 
-        });
-        
-        const resultText = await response.text();
-        const resultData = JSON.parse(resultText);
-        
-        if(resultData.status === 'success') {
-            chartTargets[type] = value; 
-            targetModal.hide(); 
-            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', text: `ทุกคนในระบบจะเห็นเป้าหมายใหม่ทันที`, timer: 2000, showConfirmButton: false }); 
-            updateChart(type); 
-        } else {
-            throw new Error(resultData.error || "Unknown Error");
-        }
-    } catch (e) {
-        console.error("Save Target Error: ", e);
-        Swal.fire('ข้อผิดพลาด', 'บันทึกเป้าหมายไม่สำเร็จ ตรวจสอบ SCRIPT_URL หรือ Deploy ใหม่', 'error');
-    }
-}
-
-function openModal(type, id = null) {
-    currentEditId = id; document.getElementById('dataType').value = type; document.getElementById('modalTitle').textContent = id ? 'แก้ไขข้อมูล ' + type : 'เพิ่มข้อมูล ' + type;
-    document.getElementById('denominatorLabel').textContent = type === 'SSI' ? 'จำนวนผ่าตัด' : (type === 'VAP' ? 'Ventilator Days' : (type === 'CA-UTI' ? 'Catheter Days' : 'Central Line Days'));
-    if (id) {
-        const data = globalData.find(d => d.id === id);
-        if (data) {
-            document.getElementById('dataId').value = data.id; document.getElementById('dataMonth').value = data.month;
-            document.getElementById('dataYear').value = data.year; document.getElementById('dataDenominator').value = data.denominator;
-            document.getElementById('dataCases').value = data.cases; document.getElementById('dataRate').value = data.rate.toFixed(2) + (type === 'SSI' ? '%' : ' per 1000');
-        }
-    } else {
-        document.getElementById('dataForm').reset(); document.getElementById('dataId').value = '';
-        document.getElementById('dataMonth').value = new Date().getMonth() + 1; document.getElementById('dataYear').value = new Date().getFullYear(); document.getElementById('dataRate').value = '';
-    }
+function openModal(type, id=null) {
+    let ind = globalIndicators.find(i => i.code === type);
+    document.getElementById('dataType').value = type; document.getElementById('dataMultiplier').value = ind.multiplier;
+    document.getElementById('modalTitle').textContent = id ? `แก้ไขข้อมูล ${type}` : `เพิ่มข้อมูล ${type}`;
+    if(id) {
+        let d = globalData.find(x => x.id === id);
+        document.getElementById('dataId').value=d.id; document.getElementById('dataMonth').value=d.month; document.getElementById('dataYear').value=d.year;
+        document.getElementById('dataDenominator').value=d.denominator; document.getElementById('dataCases').value=d.cases; calculateRate();
+    } else { document.getElementById('dataForm').reset(); document.getElementById('dataId').value=''; document.getElementById('dataMonth').value=new Date().getMonth()+1; document.getElementById('dataYear').value=new Date().getFullYear(); }
     dataModal.show();
 }
 
 async function saveData() {
-    const type = document.getElementById('dataType').value; const id = document.getElementById('dataId').value;
-    const month = parseInt(document.getElementById('dataMonth').value); const year = parseInt(document.getElementById('dataYear').value);
-    const denominator = parseFloat(document.getElementById('dataDenominator').value); const cases = parseFloat(document.getElementById('dataCases').value);
-    if (!type || !month || !year || isNaN(denominator) || isNaN(cases)) { Swal.fire('ระวัง', 'กรุณากรอกข้อมูลให้ครบ', 'warning'); return; }
+    let type=document.getElementById('dataType').value, id=document.getElementById('dataId').value;
+    let m=parseInt(document.getElementById('dataMonth').value), y=parseInt(document.getElementById('dataYear').value);
+    let den=parseFloat(document.getElementById('dataDenominator').value), cases=parseFloat(document.getElementById('dataCases').value);
+    if(isNaN(den)||isNaN(cases)) return Swal.fire('ระวัง', 'กรุณาใส่ตัวเลข', 'warning');
+    let multi = parseInt(document.getElementById('dataMultiplier').value);
+    let rate = den>0 ? (cases/den)*multi : 0;
     
-    let rate = 0; if (denominator > 0) { rate = type === 'SSI' ? ((cases / denominator) * 100) : ((cases / denominator) * 1000); }
-    const currentAgency = (localStorage.getItem('ha_agency_name') || '').trim();
-    const newData = { id: id || Date.now().toString(), agency: currentAgency, type, month, year, denominator, cases, rate };
-
-    Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    Swal.fire({ title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading() });
     try {
-        const response = await fetch(SCRIPT_URL, { 
-            method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-            body: JSON.stringify({ action: 'save', data: newData }) 
-        });
-        
-        const resultText = await response.text();
-        const resultData = JSON.parse(resultText);
-        
-        if(resultData.status === 'success') {
-            dataModal.hide(); 
-            Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลแล้ว', timer: 1500, showConfirmButton: false }); 
-            loadDataFromServer(); 
-        } else {
-            throw new Error(resultData.error || "Unknown Error");
-        }
-    } catch (e) { 
-        console.error("Save Data Error: ", e);
-        Swal.fire('ข้อผิดพลาด', 'บันทึกไม่สำเร็จ ตรวจสอบการอัปเดต Google Apps Script', 'error'); 
-    }
+        let payload = { action:'save', data: {id:id||Date.now(), agency:localStorage.getItem('ha_agency_name'), type, month:m, year:y, denominator:den, cases, rate} };
+        await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(payload) });
+        dataModal.hide(); Swal.fire('สำเร็จ', 'บันทึกข้อมูลแล้ว', 'success'); loadDataFromServer();
+    } catch(e) { Swal.fire('Error','บันทึกไม่สำเร็จ','error'); }
 }
 
-function deleteData(id, type) {
-    Swal.fire({ title: 'ยืนยันการลบ?', text: "ลบถาวร", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ลบ', cancelButtonText: 'ยกเลิก' }).then(async (result) => {
-        if (result.isConfirmed) {
-            Swal.fire({ title: 'กำลังลบ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-            try { 
-                await fetch(SCRIPT_URL, { 
-                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-                    body: JSON.stringify({ action: 'delete', id: id }) 
-                }); 
-                Swal.fire({ icon: 'success', title: 'ลบแล้ว', timer: 1500, showConfirmButton: false }); 
-                loadDataFromServer(); 
-            } catch (e) { Swal.fire('ข้อผิดพลาด', 'ลบไม่สำเร็จ', 'error'); }
+function deleteData(id) {
+    Swal.fire({ title:'ลบข้อมูล?', icon:'warning', showCancelButton:true, confirmButtonText:'ลบ' }).then(async(res)=>{
+        if(res.isConfirmed) {
+            Swal.fire({ title:'กำลังลบ...', didOpen:()=>Swal.showLoading() });
+            await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify({action:'delete', id:id}) });
+            Swal.fire('สำเร็จ', '', 'success'); loadDataFromServer();
         }
     });
 }
 
+function openTargetModal(type) { document.getElementById('targetType').value=type; document.getElementById('targetValue').value=chartTargets[type]||0; targetModal.show(); }
+async function saveTarget() {
+    let t=document.getElementById('targetType').value, v=parseFloat(document.getElementById('targetValue').value);
+    if(isNaN(v)) return; Swal.fire({ title:'กำลังบันทึกเป้าหมาย...', didOpen:()=>Swal.showLoading() });
+    await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify({action:'saveTarget', type:t, value:v}) });
+    targetModal.hide(); Swal.fire('สำเร็จ', '', 'success'); loadDataFromServer();
+}
+
 function renderTable(type) {
-    const data = globalData.filter(d => d.type === type); const tableId = type.toLowerCase().replace('-', '') + 'Table';
-    const tbody = document.querySelector(`#${tableId} tbody`); if (!tbody) return; tbody.innerHTML = '';
-    const isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
-    
-    data.sort((a, b) => { if (a.year !== b.year) return b.year - a.year; return b.month - a.month; });
-    data.forEach(item => {
-        const row = document.createElement('tr');
-        let actionHtml = '';
-        if (isAdmin) { actionHtml = `<span class="badge bg-secondary">ดูภาพรวม</span>`; } 
-        else { actionHtml = `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${item.type}', '${item.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteData('${item.id}', '${item.type}')"><i class="fas fa-trash"></i></button>`; }
-        row.innerHTML = `<td class="align-middle">${fullMonthNames[item.month - 1]} ${item.year}</td><td class="align-middle">${item.denominator.toLocaleString()}</td><td class="align-middle">${item.cases}</td><td class="align-middle text-primary"><strong>${item.rate.toFixed(2)}</strong><small class="text-muted ms-1">${item.type === 'SSI' ? '%' : '/ 1000'}</small></td><td class="no-print text-center align-middle">${actionHtml}</td>`;
-        tbody.appendChild(row);
+    let data = globalData.filter(d => d.type === type).sort((a,b)=> b.year-a.year || b.month-a.month);
+    let tbody = document.querySelector(`#table-${type} tbody`); if(!tbody) return; tbody.innerHTML='';
+    let ind = globalIndicators.find(i => i.code === type); let suffix = ind.multiplier==100?'%':'/1000';
+    let isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
+    data.forEach(d => {
+        let act = isAdmin ? `<span class="badge bg-secondary">ภาพรวม</span>` : `<button class="btn btn-sm btn-outline-primary me-1" onclick="openModal('${type}', '${d.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline-danger" onclick="deleteData('${d.id}')"><i class="fas fa-trash"></i></button>`;
+        tbody.innerHTML += `<tr><td>${fullMonthNames[d.month-1]} ${d.year}</td><td>${d.denominator.toLocaleString()}</td><td>${d.cases}</td><td class="text-primary fw-bold">${d.rate.toFixed(2)}<small class="text-muted ms-1">${suffix}</small></td><td class="text-center no-print">${act}</td></tr>`;
     });
 }
 
 function updateChart(type) {
-    const chartId = type.toLowerCase().replace('-', '') + 'Chart'; const canvas = document.getElementById(chartId); if (!canvas) return; const ctx = canvas.getContext('2d');
-    const viewType = document.getElementById(type.toLowerCase().replace('-', '') + 'ViewType')?.value || 'monthly'; const yearFilter = document.getElementById(type.toLowerCase().replace('-', '') + 'YearFilter')?.value || 'all';
-    let data = globalData.filter(d => d.type === type); if (yearFilter !== 'all') { data = data.filter(d => d.year === parseInt(yearFilter)); }
-    if (viewType === 'yearly') {
-        const yearlyData = {}; data.forEach(d => { if (!yearlyData[d.year]) { yearlyData[d.year] = { denominator: 0, cases: 0 }; } yearlyData[d.year].denominator += d.denominator; yearlyData[d.year].cases += d.cases; });
-        const labels = Object.keys(yearlyData).sort(); const rates = labels.map(year => { const d = yearlyData[year]; return type === 'SSI' ? (d.cases / d.denominator * 100) : (d.cases / d.denominator * 1000); });
-        createControlChart(ctx, type, labels, rates, 'yearly');
+    let ctx = document.getElementById(`chart-${type}`).getContext('2d');
+    let view = document.getElementById(`viewType-${type}`).value; let yf = document.getElementById(`yearFilter-${type}`).value;
+    let data = globalData.filter(d => d.type === type); if(yf !== 'all') data = data.filter(d => d.year == yf);
+    let ind = globalIndicators.find(i => i.code === type);
+    let labels=[], rates=[];
+    
+    if(view === 'yearly') {
+        let yD = {}; data.forEach(d => { if(!yD[d.year]) yD[d.year]={den:0, c:0}; yD[d.year].den+=d.denominator; yD[d.year].c+=d.cases; });
+        labels = Object.keys(yD).sort(); rates = labels.map(y => yD[y].den>0 ? (yD[y].c/yD[y].den)*ind.multiplier : 0);
     } else {
-        data.sort((a, b) => { if (a.year !== b.year) return a.year - b.year; return a.month - b.month; });
-        const labels = data.map(d => `${monthNames[d.month - 1]} ${d.year}`); const rates = data.map(d => d.rate); createControlChart(ctx, type, labels, rates, 'monthly');
+        data.sort((a,b)=> a.year-b.year || a.month-b.month);
+        labels = data.map(d => `${monthNames[d.month-1]} ${d.year}`); rates = data.map(d => d.rate);
     }
-}
-
-function createControlChart(ctx, type, labels, rates, viewType) {
-    if (charts[type]) { charts[type].destroy(); } if (rates.length === 0) return;
-    const mean = rates.reduce((a, b) => a + b, 0) / rates.length; const stdDev = Math.sqrt(rates.map(r => Math.pow(r - mean, 2)).reduce((a, b) => a + b, 0) / rates.length) || 0;
-    const ucl = mean + (3 * stdDev); const lcl = Math.max(0, mean - (3 * stdDev)); const targetValue = chartTargets[type] || 0;
-    const colors = { 'VAP': { bg: 'rgba(102, 126, 234, 0.2)', border: '#667eea', point: '#667eea' }, 'CA-UTI': { bg: 'rgba(240, 147, 251, 0.2)', border: '#f093fb', point: '#f093fb' }, 'CA-BSI': { bg: 'rgba(79, 172, 254, 0.2)', border: '#4facfe', point: '#4facfe' }, 'SSI': { bg: 'rgba(67, 233, 123, 0.2)', border: '#43e97b', point: '#43e97b' } }; const color = colors[type];
-    charts[type] = new Chart(ctx, { type: 'line', plugins: [lineLabelPlugin], data: { labels: labels, datasets: [{ label: 'Rate', data: rates, borderColor: color.border, backgroundColor: color.bg, borderWidth: 3, pointBackgroundColor: color.point, pointRadius: 5, fill: true, tension: 0.4 }, { label: 'Mean', data: Array(labels.length).fill(mean), borderColor: '#2196f3', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }, { label: 'UCL', data: Array(labels.length).fill(ucl), borderColor: '#f44336', borderWidth: 2, borderDash: [10, 5], pointRadius: 0, fill: false }, { label: 'LCL', data: Array(labels.length).fill(lcl), borderColor: '#f44336', borderWidth: 2, borderDash: [10, 5], pointRadius: 0, fill: false }, { label: 'Target', data: Array(labels.length).fill(targetValue), borderColor: '#ff9800', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, layout: { padding: { right: 80 } }, plugins: { title: { display: true, text: `Control Chart - ${type} (${viewType === 'monthly' ? 'รายเดือน' : 'รายปี'})`, font: { size: 16, weight: 'bold' } }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) label += ': '; if (context.parsed.y !== null) { label += context.parsed.y.toFixed(2); if (context.dataset.label === 'Rate') label += type === 'SSI' ? '%' : ' per 1000'; } return label; } } } } } });
+    
+    if(charts[type]) charts[type].destroy(); if(rates.length===0) return;
+    let mean = rates.reduce((a,b)=>a+b,0)/rates.length; let sd = Math.sqrt(rates.map(r=>Math.pow(r-mean,2)).reduce((a,b)=>a+b,0)/rates.length)||0;
+    let color = colorPalette[globalIndicators.findIndex(i=>i.code===type)%colorPalette.length];
+    
+    charts[type] = new Chart(ctx, { type: 'line', data: { labels, datasets: [
+        { label: 'Rate', data: rates, borderColor: color, backgroundColor: color+'20', fill:true, tension:0.4, borderWidth:3 },
+        { label: 'Target', data: Array(labels.length).fill(chartTargets[type]||0), borderColor: '#ff9800', borderDash:[5,5], fill:false },
+        { label: 'Mean', data: Array(labels.length).fill(mean), borderColor: '#2196f3', borderDash:[5,5], fill:false },
+        { label: 'UCL', data: Array(labels.length).fill(mean+(3*sd)), borderColor: '#f44336', borderDash:[10,5], fill:false }
+    ]}, options: { responsive:true, maintainAspectRatio:false } });
 }
 
 function updateDashboard() {
-    const dashSelect = document.getElementById('dashboardYearFilter');
-    const selectedYear = dashSelect ? parseInt(dashSelect.value) : new Date().getFullYear();
-    const filteredData = globalData.filter(d => d.year === selectedYear);
+    let ySelect = document.getElementById('dashboardYearFilter'); let selY = ySelect ? parseInt(ySelect.value) : new Date().getFullYear();
+    let cDiv = document.getElementById('dashboardCardsContainer'); cDiv.innerHTML='';
+    let fData = globalData.filter(d => d.year === selY);
+    
+    let activeInds = globalIndicators.filter(i => i.isActive);
+    let overviewDatasets = [];
 
-    const totals = { 'VAP': { cases: 0, denom: 0 }, 'CA-UTI': { cases: 0, denom: 0 }, 'CA-BSI': { cases: 0, denom: 0 }, 'SSI': { cases: 0, denom: 0 } };
-    filteredData.forEach(d => { if (totals[d.type]) { totals[d.type].cases += d.cases; totals[d.type].denom += d.denominator; } });
-    
-    document.getElementById('totalVAP').textContent = totals['VAP'].cases.toLocaleString(); 
-    document.getElementById('totalCAUTI').textContent = totals['CA-UTI'].cases.toLocaleString(); 
-    document.getElementById('totalCABSI').textContent = totals['CA-BSI'].cases.toLocaleString(); 
-    document.getElementById('totalSSI').textContent = totals['SSI'].cases.toLocaleString();
-    
-    document.getElementById('vapRate').textContent = `${totals['VAP'].denom > 0 ? ((totals['VAP'].cases / totals['VAP'].denom) * 1000).toFixed(2) : 0} per 1000`; 
-    document.getElementById('cautiRate').textContent = `${totals['CA-UTI'].denom > 0 ? ((totals['CA-UTI'].cases / totals['CA-UTI'].denom) * 1000).toFixed(2) : 0} per 1000`; 
-    document.getElementById('cabsiRate').textContent = `${totals['CA-BSI'].denom > 0 ? ((totals['CA-BSI'].cases / totals['CA-BSI'].denom) * 1000).toFixed(2) : 0} per 1000`; 
-    document.getElementById('ssiRate').textContent = `${totals['SSI'].denom > 0 ? ((totals['SSI'].cases / totals['SSI'].denom) * 100).toFixed(2) : 0}%`;
-    
-    updateOverviewChart(selectedYear);
-}
-
-function updateOverviewChart(selectedYear) {
-    const ctx = document.getElementById('overviewChart'); if (!ctx) return; const context = ctx.getContext('2d'); if (charts.overview) { charts.overview.destroy(); }
-    const types = ['VAP', 'CA-UTI', 'CA-BSI', 'SSI']; 
-    
-    const datasets = types.map((type, index) => { 
-        const typeData = globalData.filter(d => d.type === type && d.year === selectedYear); 
-        const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b']; 
-        return { 
-            label: type, 
-            data: Array(12).fill(null).map((_, i) => { const monthData = typeData.find(d => d.month === i + 1); return monthData ? monthData.rate : null; }), 
-            borderColor: colors[index], backgroundColor: colors[index] + '20', tension: 0.4 
-        }; 
+    activeInds.forEach((ind, index) => {
+        let color = colorPalette[index % colorPalette.length];
+        let dInd = fData.filter(d => d.type === ind.code);
+        let tDen = dInd.reduce((s,d)=>s+d.denominator,0), tCase = dInd.reduce((s,d)=>s+d.cases,0);
+        let rate = tDen>0 ? (tCase/tDen)*ind.multiplier : 0;
+        
+        cDiv.innerHTML += `<div class="col-md-3 col-6 mb-3"><div class="stat-card" style="border-left-color:${color};"><div class="stat-number" style="color:${color};">${tCase.toLocaleString()}</div><div class="text-muted">${ind.code} Cases</div><small class="text-success fw-bold">${rate.toFixed(2)} ${ind.multiplier==100?'%':'/1k'}</small></div></div>`;
+        
+        overviewDatasets.push({ label: ind.code, borderColor: color, tension: 0.4, data: Array(12).fill(null).map((_,i)=>{ let mD = dInd.find(x=>x.month==i+1); return mD?mD.rate:null; }) });
     });
-    
-    charts.overview = new Chart(context, { type: 'line', data: { labels: monthNames, datasets: datasets }, options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: `แนวโน้มอัตราการติดเชื้อ ภาพรวมปี ${selectedYear}`, font: { size: 16 } } }, scales: { y: { beginAtZero: true } } } });
+
+    let ctx = document.getElementById('overviewChart'); if(charts.overview) charts.overview.destroy();
+    charts.overview = new Chart(ctx, { type:'line', data:{ labels:monthNames, datasets:overviewDatasets }, options:{ responsive:true, maintainAspectRatio:false }});
 }
 
 function exportData(type) {
-    const data = globalData.filter(d => d.type === type); let csv = 'Month,Year,Denominator,Cases,Rate\n';
-    data.forEach(d => { csv += `${fullMonthNames[d.month - 1]},${d.year},${d.denominator},${d.cases},${d.rate}\n`; });
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${type}_Report_${new Date().getTime()}.csv`; link.click();
+    let data = globalData.filter(d => d.type === type); let csv = 'Month,Year,Denominator,Cases,Rate\n';
+    data.forEach(d => csv += `${fullMonthNames[d.month-1]},${d.year},${d.denominator},${d.cases},${d.rate}\n`);
+    let link = document.createElement('a'); link.href = URL.createObjectURL(new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'})); link.download=`${type}_Report.csv`; link.click();
 }
-
 function generatePDF() {
-    const dateObj = new Date(); document.getElementById('currentDatePDF').textContent = dateObj.toLocaleDateString('th-TH') + ' เวลา ' + dateObj.toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'}) + ' น.';
-    const pdfHeader = document.getElementById('pdfHeader'); pdfHeader.style.display = 'block'; pdfHeader.classList.remove('d-none');
-    const element = document.getElementById('pdfExportArea'); const agency = localStorage.getItem('ha_agency_name') || 'Report';
-    const opt = { margin: 10, filename: `HA_Report_${agency}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
-    Swal.fire({ title: 'กำลังสร้างไฟล์ PDF...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    html2pdf().set(opt).from(element).save().then(() => { pdfHeader.style.display = 'none'; pdfHeader.classList.add('d-none'); Swal.close(); });
+    document.getElementById('currentDatePDF').textContent = new Date().toLocaleString('th-TH'); document.getElementById('pdfHeader').style.display='block'; document.getElementById('pdfHeader').classList.remove('d-none');
+    Swal.fire({ title:'กำลังสร้าง PDF...', didOpen:()=>Swal.showLoading() });
+    html2pdf().set({ margin:10, filename:'HA_Report.pdf', jsPDF:{orientation:'landscape'} }).from(document.getElementById('pdfExportArea')).save().then(()=>{ document.getElementById('pdfHeader').style.display='none'; Swal.close(); });
 }
 </script>
 </body>
