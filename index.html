@@ -49,11 +49,38 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="mb-3 text-start">
                 <label class="form-label fw-bold">เลือกหน่วยงาน / หอผู้ป่วย</label>
-                <select class="form-select" id="inputAgency" required>
+              <select class="form-select form-select-custom" id="inputAgency" required>
                     <option value="" disabled selected>-- กรุณาเลือกหอผู้ป่วย --</option>
-                    <optgroup label="ผู้ดูแลระบบ"><option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (Admin)</option></optgroup>
-                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยอายุรกรรม"><option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option></optgroup>
-                    </select>
+                    <optgroup label="อื่นๆ / ผู้ดูแลระบบ">
+                        <option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (ดูภาพรวมทั้ง รพ.)</option>
+                    </optgroup>
+                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยอายุรกรรม">
+                        <option value="หอผู้ป่วย สก.3">หอผู้ป่วย สก.3</option><option value="หอผู้ป่วย สก.4">หอผู้ป่วย สก.4</option>
+                        <option value="หอผู้ป่วย สก.5">หอผู้ป่วย สก.5</option><option value="หอผู้ป่วย สก.6">หอผู้ป่วย สก.6</option>
+                        <option value="หอผู้ป่วยสงฆ์อาพาธ">หอผู้ป่วยสงฆ์อาพาธ</option><option value="หอผู้ป่วยสงฆ์พิเศษ 2+3">หอผู้ป่วยสงฆ์พิเศษ 2+3</option>
+                        <option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 1</option><option value="หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2">หอผู้ป่วยสามัญติดเชื้อ ธารน้ำใจ 2</option>
+                        <option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง">หอผู้ป่วยพิเศษอายุรกรรมชลาทรล่าง</option><option value="หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน">หอผู้ป่วยพิเศษอายุรกรรมชลาทรบน</option>
+                        <option value="หอผู้ป่วย Low Immune ธนจ.4">หอผู้ป่วย Low Immune ธนจ.4</option>
+                    </optgroup>
+                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยศัลยกรรม">
+                        <option value="หอผู้ป่วยชลาทิศ 1">หอผู้ป่วยชลาทิศ 1</option><option value="หอผู้ป่วยชลาทิศ 2">หอผู้ป่วยชลาทิศ 2</option>
+                        <option value="หอผู้ป่วยชลาทิศ 3">หอผู้ป่วยชลาทิศ 3</option><option value="หอผู้ป่วยชลาทิศ 4">หอผู้ป่วยชลาทิศ 4</option>
+                        <option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.7">หอผู้ป่วยพิเศษศัลยกรรม ฉ.7</option><option value="หอผู้ป่วยพิเศษศัลยกรรม ฉ.8">หอผู้ป่วยพิเศษศัลยกรรม ฉ.8</option>
+                        <option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.9">หอผู้ป่วยพิเศษศัลยกรรม Ex.9</option><option value="หอผู้ป่วยแผลไหม้">หอผู้ป่วยแผลไหม้</option>
+                        <option value="หอผู้ป่วยเคมีบำบัด">หอผู้ป่วยเคมีบำบัด</option>
+                    </optgroup>
+                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยสูติ-นรีเวช">
+                        <option value="หอผู้ป่วยหลังคลอด">หอผู้ป่วยหลังคลอด</option><option value="หอผู้ป่วยนรีเวช ชลารักษ์4">หอผู้ป่วยนรีเวช ชลารักษ์4</option>
+                        <option value="หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4">หอผู้ป่วยพิเศษนรีเวช ชลารักษ์4</option>
+                    </optgroup>
+                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วยออร์โธปิดิกส์">
+                        <option value="หอผู้ป่วยกระดูกชาย">หอผู้ป่วยกระดูกชาย</option><option value="หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง">หอผู้ป่วยศัลยกรรมอุบัติเหตุและกระดูกหญิง</option>
+                        <option value="หอผู้ป่วยพิเศษศัลยกรรม Ex.8">หอผู้ป่วยพิเศษศัลยกรรม Ex.8</option>
+                    </optgroup>
+                    <optgroup label="กลุ่มงานการพยาบาลผู้ป่วย โสต ศอ นาสิก จักษุ">
+                        <option value="หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3">หอผู้ป่วยสามัญ EENT และศัลยกรรมเด็ก ชว.3</option><option value="หอผู้ป่วยพิเศษ EENT">หอผู้ป่วยพิเศษ EENT</option>
+                    </optgroup>
+                </select>
             </div>
             <div class="mb-4 text-start"><label class="form-label fw-bold">รหัสผ่าน</label><input type="password" class="form-control" id="inputPassword" required placeholder="ใส่รหัสผ่าน 1234"></div>
             <button type="submit" class="btn btn-custom w-100 py-2 fs-5">เข้าสู่ระบบ</button>
