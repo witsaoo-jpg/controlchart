@@ -109,9 +109,9 @@
         <ul class="nav nav-pills justify-content-center mb-4 no-print" id="dynamicTabs" role="tablist"></ul>
         <div class="tab-content" id="dynamicTabContent">
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-end mb-3 no-print filter-section">
-                    <div style="min-width: 200px;"><label class="form-label fw-bold small">เลือกปีเพื่อดูภาพรวมกราฟ</label><select class="form-select w-100" id="dashboardYearFilter" onchange="updateDashboard()"></select></div>
-                    <div class="d-flex gap-2"><button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button></div>
+                <div class="d-flex gap-2">
+                    <a href="handbook.html" class="btn btn-outline-custom" target="_blank"><i class="fas fa-book me-2"></i>คู่มือ / สูตรคำนวณ</a>
+                    <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
                 </div>
                 <div id="pdfExportArea" class="bg-white p-4" style="border-radius: 15px;">
                     <div class="text-center mb-4 d-none d-print-block" id="pdfHeader" style="display: none;"><h2 class="fw-bold text-dark">รายงานอัตราการติดเชื้อ</h2><h4 class="text-primary mt-2">หน่วยงาน: <span id="pdfAgencyName"></span></h4><hr></div>
