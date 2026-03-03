@@ -50,7 +50,7 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="mb-3 text-start">
                 <label class="form-label fw-bold">เลือกหน่วยงาน / หอผู้ป่วย</label>
-                <select class="form-select" id="inputAgency" required>
+                <select class="form-select form-select-custom" id="inputAgency" required>
                     <option value="" disabled selected>-- กรุณาเลือกหอผู้ป่วย --</option>
                     <optgroup label="ผู้ดูแลระบบ">
                         <option value="ผู้ดูแลระบบกลาง (Admin)" class="fw-bold text-primary">ผู้ดูแลระบบกลาง (Admin)</option>
@@ -108,10 +108,14 @@
 
         <ul class="nav nav-pills justify-content-center mb-4 no-print" id="dynamicTabs" role="tablist"></ul>
         <div class="tab-content" id="dynamicTabContent">
+            
             <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                <div class="d-flex gap-2">
-                    <a href="handbook.html" class="btn btn-outline-custom" target="_blank"><i class="fas fa-book me-2"></i>คู่มือ / สูตรคำนวณ</a>
-                    <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
+                <div class="d-flex justify-content-between align-items-end mb-3 no-print filter-section">
+                    <div style="min-width: 200px;"><label class="form-label fw-bold small">เลือกปีเพื่อดูภาพรวมกราฟ</label><select class="form-select w-100" id="dashboardYearFilter" onchange="updateDashboard()"></select></div>
+                    <div class="d-flex gap-2">
+                        <a href="handbook.html" class="btn btn-outline-secondary" target="_blank"><i class="fas fa-book me-2"></i>คู่มือ / สูตรคำนวณ</a>
+                        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fas fa-file-pdf me-2"></i>ดาวน์โหลด PDF</button>
+                    </div>
                 </div>
                 <div id="pdfExportArea" class="bg-white p-4" style="border-radius: 15px;">
                     <div class="text-center mb-4 d-none d-print-block" id="pdfHeader" style="display: none;"><h2 class="fw-bold text-dark">รายงานอัตราการติดเชื้อ</h2><h4 class="text-primary mt-2">หน่วยงาน: <span id="pdfAgencyName"></span></h4><hr></div>
@@ -197,14 +201,56 @@ const APP_PASSWORD = '1234';
 document.getElementById('currentYearCredit').textContent = new Date().getFullYear();
 const colorPalette = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#f6d365', '#ff0844', '#00c6fb', '#c471ed'];
 
-let allHospitalData = []; // เก็บข้อมูลดิบทั้งหมด
-let globalData = [];      // เก็บข้อมูลที่ผ่านการกรองแล้วเพื่อแสดงผล
+let allHospitalData = []; 
+let globalData = [];      
 let globalIndicators = []; 
 let chartTargets = {}; 
 let charts = {}; 
 let dataModal, targetModal, indicatorModal;
 const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const fullMonthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+// 🌟 สร้างปลั๊กอินพิเศษสำหรับวาดตัวเลขบนกราฟ
+const customDataLabelsPlugin = {
+    id: 'customDataLabels',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            if (meta.hidden) return;
+
+            // 1. เขียนข้อความระบุเส้น Target, Mean, UCL, LCL ที่ปลายกราฟด้านขวา
+            if (['Target', 'Mean', 'UCL', 'LCL'].includes(dataset.label)) {
+                if (dataset.data.length > 0) {
+                    const lastPoint = meta.data[meta.data.length - 1];
+                    const value = dataset.data[dataset.data.length - 1];
+                    if (lastPoint && value !== undefined && value !== null) {
+                        ctx.font = 'bold 12px Prompt';
+                        ctx.fillStyle = dataset.borderColor;
+                        ctx.textAlign = 'left';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(` ${dataset.label}: ${value.toFixed(2)}`, lastPoint.x + 8, lastPoint.y);
+                    }
+                }
+            } 
+            // 2. เขียนตัวเลขกำกับเหนือจุดบนกราฟเส้น Rate (อัตราจริง)
+            else if (dataset.label === 'Rate') {
+                meta.data.forEach((point, index) => {
+                    const value = dataset.data[index];
+                    if (value !== null && value !== undefined && point) {
+                        ctx.font = 'bold 12px Prompt';
+                        ctx.fillStyle = '#333'; // สีเข้มให้อ่านง่าย
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText(value.toFixed(2), point.x, point.y - 10);
+                    }
+                });
+            }
+        });
+        ctx.restore();
+    }
+};
 
 document.addEventListener('DOMContentLoaded', () => { 
     checkLoginStatus(); 
@@ -245,7 +291,6 @@ async function loadDataFromServer() {
         const currentAgency = localStorage.getItem('ha_agency_name');
         const isAdmin = currentAgency === 'ผู้ดูแลระบบกลาง (Admin)';
         
-        // เก็บข้อมูลดิบทั้งหมดไว้ใน allHospitalData
         allHospitalData = (responseData.data || []).map(item => ({
             id: String(item.id || Date.now()), agency: String(item.agency || ''), type: item.type,
             month: parseInt(item.month), year: parseInt(item.year),
@@ -254,16 +299,13 @@ async function loadDataFromServer() {
 
         if (isAdmin) {
             populateAdminAgencyFilter();
-            processDataForView('ภาพรวมโรงพยาบาล'); // โหลดครั้งแรกให้ดูภาพรวม
-        } else { 
-            processDataForView(currentAgency); 
-        }
+            processDataForView('ภาพรวมโรงพยาบาล');
+        } else { processDataForView(currentAgency); }
 
         buildDynamicUI(); Swal.close();
     } catch (e) { Swal.fire('Error', 'โหลดข้อมูลล้มเหลว', 'error'); console.error(e); }
 }
 
-// ฟังก์ชันดึงรายชื่อตึกมาใส่ใน Dropdown ของ Admin
 function populateAdminAgencyFilter() {
     const select = document.getElementById('adminAgencySelect');
     document.getElementById('adminFilterContainer').style.display = 'block';
@@ -272,12 +314,9 @@ function populateAdminAgencyFilter() {
     agencies.sort();
 
     select.innerHTML = '<option value="ภาพรวมโรงพยาบาล">📊 ดูภาพรวมทั้งโรงพยาบาล</option>';
-    agencies.forEach(agency => {
-        select.innerHTML += `<option value="${agency}">🏥 ${agency}</option>`;
-    });
+    agencies.forEach(agency => { select.innerHTML += `<option value="${agency}">🏥 ${agency}</option>`; });
 }
 
-// ฟังก์ชันประมวลผลข้อมูลตามตึกที่เลือก
 function processDataForView(selectedAgency) {
     const isAdmin = localStorage.getItem('ha_agency_name') === 'ผู้ดูแลระบบกลาง (Admin)';
 
@@ -292,12 +331,9 @@ function processDataForView(selectedAgency) {
             let ind = globalIndicators.find(i => i.code === d.type); let multi = ind ? ind.multiplier : 1000;
             d.rate = d.denominator > 0 ? (d.cases / d.denominator) * multi : 0; return d;
         });
-    } else {
-        globalData = allHospitalData.filter(d => d.agency === selectedAgency);
-    }
+    } else { globalData = allHospitalData.filter(d => d.agency === selectedAgency); }
 }
 
-// ฟังก์ชันเมื่อ Admin เปลี่ยนตึกใน Dropdown
 function onAdminAgencyChange() {
     const selected = document.getElementById('adminAgencySelect').value;
     processDataForView(selected);
@@ -489,14 +525,21 @@ function updateChart(type) {
     
     if(charts[type]) charts[type].destroy(); if(rates.length===0) return;
     let mean = rates.reduce((a,b)=>a+b,0)/rates.length; let sd = Math.sqrt(rates.map(r=>Math.pow(r-mean,2)).reduce((a,b)=>a+b,0)/rates.length)||0;
+    let lcl = Math.max(0, mean - (3*sd)); // คำนวณขีดจำกัดล่าง (LCL) ป้องกันค่าติดลบ
     let color = colorPalette[globalIndicators.findIndex(i=>i.code===type)%colorPalette.length];
     
-    charts[type] = new Chart(ctx, { type: 'line', data: { labels, datasets: [
-        { label: 'Rate', data: rates, borderColor: color, backgroundColor: color+'20', fill:true, tension:0.4, borderWidth:3 },
-        { label: 'Target', data: Array(labels.length).fill(chartTargets[type]||0), borderColor: '#ff9800', borderDash:[5,5], fill:false },
-        { label: 'Mean', data: Array(labels.length).fill(mean), borderColor: '#2196f3', borderDash:[5,5], fill:false },
-        { label: 'UCL', data: Array(labels.length).fill(mean+(3*sd)), borderColor: '#f44336', borderDash:[10,5], fill:false }
-    ]}, options: { responsive:true, maintainAspectRatio:false } });
+    // 🌟 นำปลั๊กอิน (customDataLabelsPlugin) ยัดเข้าไปในกราฟ พร้อมเพิ่มเส้น LCL 
+    charts[type] = new Chart(ctx, { type: 'line', plugins: [customDataLabelsPlugin], data: { labels, datasets: [
+        { label: 'Rate', data: rates, borderColor: color, backgroundColor: color+'20', fill:true, tension:0.4, borderWidth:3, pointRadius: 5 },
+        { label: 'Target', data: Array(labels.length).fill(chartTargets[type]||0), borderColor: '#ff9800', borderDash:[5,5], fill:false, borderWidth:2, pointRadius: 0 },
+        { label: 'Mean', data: Array(labels.length).fill(mean), borderColor: '#2196f3', borderDash:[5,5], fill:false, borderWidth:2, pointRadius: 0 },
+        { label: 'UCL', data: Array(labels.length).fill(mean+(3*sd)), borderColor: '#f44336', borderDash:[10,5], fill:false, borderWidth:2, pointRadius: 0 },
+        { label: 'LCL', data: Array(labels.length).fill(lcl), borderColor: '#f44336', borderDash:[10,5], fill:false, borderWidth:2, pointRadius: 0 }
+    ]}, options: { 
+        responsive:true, 
+        maintainAspectRatio:false, 
+        layout: { padding: { right: 80, top: 25 } } // 🌟 เพิ่มระยะขอบขวาให้ข้อความไม่โดนตัด
+    } });
 }
 
 function updateDashboard() {
