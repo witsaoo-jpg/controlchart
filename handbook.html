@@ -38,6 +38,7 @@
         .chart-legend { display: flex; align-items: center; margin-bottom: 10px; }
         .legend-color { width: 30px; height: 4px; display: inline-block; margin-right: 15px; }
         
+        .math-box { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; margin-top: 10px; font-size: 0.95rem; }
         .highlight-text { color: #d97706; font-weight: 600; }
     </style>
 </head>
@@ -85,7 +86,43 @@
         </div>
 
         <div class="card card-custom">
-            <div class="card-header-custom"><i class="fas fa-calculator me-2"></i>3. สูตรการคำนวณตัวชี้วัด (Indicator Formulas)</div>
+            <div class="card-header-custom" style="background: #fff8e1; color: #d97706; border-bottom-color: #ffecb3;">
+                <i class="fas fa-square-root-variable me-2"></i>3. ที่มาของการคำนวณทางสถิติ (Mean, SD, UCL, LCL)
+            </div>
+            <div class="card-body">
+                <p>ระบบนี้ใช้การคำนวณ Control Chart แบบพื้นฐาน โดยอาศัยหลักการของการแจกแจงแบบปกติ (Normal Distribution) ซึ่งมีที่มาและการคำนวณดังนี้:</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <h5 class="fw-bold text-dark"><i class="fas fa-divide text-primary me-2"></i>1. การหาค่าเฉลี่ย (Mean)</h5>
+                        <p class="text-muted mb-2">คือการนำอัตราการติดเชื้อ (Rate) ของทุกเดือนที่เลือกมาบวกกัน แล้วหารด้วยจำนวนเดือนทั้งหมด เพื่อหาค่ากลางที่เป็นบรรทัดฐาน (Baseline) ของหน่วยงาน</p>
+                        <div class="math-box">
+                            <strong>Mean (x̄)</strong> = ผลรวมของ Rate ทั้งหมด / จำนวนเดือน (N)
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h5 class="fw-bold text-dark"><i class="fas fa-chart-pie text-success me-2"></i>2. การหาค่าส่วนเบี่ยงเบนมาตรฐาน (SD)</h5>
+                        <p class="text-muted mb-2"><strong>SD (Standard Deviation)</strong> คือค่าที่บอกว่า ข้อมูลในแต่ละเดือนนั้น "กระจายตัว" หรือแกว่งตัวห่างจากค่าเฉลี่ย (Mean) มากน้อยแค่ไหน ถ้าระบบงานนิ่ง SD จะต่ำ ถ้าระบบแกว่งมาก SD จะสูง</p>
+                        <div class="math-box">
+                            <strong>SD</strong> = √(ผลรวมของ (Rate แต่ละเดือน - Mean)² / จำนวนเดือน)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4" style="background: #fdf5e6; border-radius: 10px; border-left: 5px solid #f59e0b;">
+                    <h5 class="fw-bold" style="color: #b45309;">ทำไมถึงต้องใช้ ± 3SD (Three Sigma Limits)?</h5>
+                    <p class="mb-2">ตามหลักการทางสถิติของ <strong>Walter A. Shewhart</strong> (ผู้คิดค้น Control Chart) การตั้งขอบเขตความคลาดเคลื่อนที่ยอมรับได้ไว้ที่ <strong>± 3SD (บวก/ลบ 3 เท่าของค่าส่วนเบี่ยงเบนมาตรฐาน)</strong> จะครอบคลุมพื้นที่ถึง <strong>99.73%</strong> ของความน่าจะเป็นทั้งหมด</p>
+                    <ul class="mb-0 text-muted">
+                        <li><strong>UCL (Upper Control Limit) = Mean + 3SD</strong><br>หากค่าสูงเกินขีดจำกัดนี้ จะถือว่าเป็นเหตุการณ์ที่ไม่ได้เกิดจากความบังเอิญตามธรรมชาติ (Special Cause) แต่เกิดจากความผิดปกติของระบบหรือพฤติกรรมบางอย่างที่ต้องรีบเข้าไปจัดการ</li>
+                        <li><strong>LCL (Lower Control Limit) = Mean - 3SD</strong><br><em>(หมายเหตุ: หากคำนวณได้ค่าติดลบ ระบบจะปรับ LCL ให้เท่ากับ 0 เสมอ เนื่องจากอัตราการติดเชื้อไม่สามารถติดลบได้)</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header-custom"><i class="fas fa-calculator me-2"></i>4. สูตรการคำนวณตัวชี้วัด (Indicator Formulas)</div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-6">
@@ -121,13 +158,13 @@
         </div>
 
         <div class="card card-custom">
-            <div class="card-header-custom"><i class="fas fa-search-chart me-2"></i>4. หลักการแปรผลกราฟ (How to Interpret)</div>
+            <div class="card-header-custom"><i class="fas fa-search-chart me-2"></i>5. หลักการแปรผลกราฟ (How to Interpret)</div>
             <div class="card-body">
                 <p>ในการดู Control Chart ให้สังเกตสัญญาณเตือน (Signals) ต่อไปนี้ ซึ่งบ่งบอกว่าระบบงานเริ่มมีความผิดปกติ และทีม ICN / หัวหน้าตึก ควรเข้าดำเนินการวิเคราะห์หาสาเหตุ (RCA):</p>
                 <ul class="list-group list-group-flush mt-3">
                     <li class="list-group-item py-3"><i class="fas fa-exclamation-triangle text-danger me-3"></i><strong>จุดที่ออกนอกเส้น (Outlier):</strong> มีจุดข้อมูล 1 จุดที่พุ่งเกินเส้น UCL (หมายถึงเดือนนั้นมีการติดเชื้อพุ่งสูงกะทันหันอย่างมีนัยสำคัญ)</li>
                     <li class="list-group-item py-3"><i class="fas fa-arrow-trend-up text-warning me-3"></i><strong>แนวโน้มต่อเนื่อง (Trend):</strong> มีจุดข้อมูล 6 จุดติดต่อกันที่ชี้ขึ้นอย่างต่อเนื่อง (หมายถึงสถานการณ์กำลังแย่ลงเรื่อยๆ แม้จะยังไม่เกิน UCL ก็ตาม)</li>
-                    <li class="list-group-item py-3"><i class="fas fa-layer-group text-primary me-3"></i><strong>การเกาะกลุ่ม (Shift):</strong> มีจุดข้อมูล 8 จุดติดต่อกันอยู่ "เหนือ" เส้น Mean (หมายถึงระดับการติดเชื้อโดยรวมขยับฐานสูงขึ้น)</li>
+                    <li class="list-group-item py-3"><i class="fas fa-layer-group text-primary me-3"></i><strong>การเกาะกลุ่ม (Shift):</strong> มีจุดข้อมูล 8 จุดติดต่อกันอยู่ "เหนือ" หรือ "ใต้" เส้น Mean (หมายถึงระดับการติดเชื้อโดยรวมขยับฐานเปลี่ยนไปจากเดิม)</li>
                 </ul>
             </div>
         </div>
