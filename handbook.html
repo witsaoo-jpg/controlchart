@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คู่มือการใช้งานระบบ HA Control Chart</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Prompt', sans-serif; }
+        body { background: #f4f7f6; color: #333; line-height: 1.6; padding-bottom: 50px; }
+        
+        .header-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 40px 0; margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid white;
+            transition: all 0.3s ease; border-radius: 8px; padding: 8px 20px; text-decoration: none;
+        }
+        .btn-back:hover { background: white; color: #764ba2; }
+        
+        .card-custom { border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; overflow: hidden; }
+        .card-header-custom { background: white; border-bottom: 2px solid #f0f0f0; padding: 20px 25px; font-weight: 700; font-size: 1.25rem; color: #4f46e5; }
+        .card-body { padding: 30px; }
+        
+        .formula-box {
+            background: #eef2ff; border-left: 5px solid #4f46e5;
+            padding: 20px; border-radius: 0 10px 10px 0; margin-bottom: 20px;
+        }
+        .formula-title { font-weight: 700; color: #3730a3; margin-bottom: 10px; font-size: 1.1rem; }
+        .formula-math { background: white; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 1.1rem; text-align: center; border: 1px dashed #a5b4fc; color: #333; font-weight: bold; }
+        
+        .chart-legend { display: flex; align-items: center; margin-bottom: 10px; }
+        .legend-color { width: 30px; height: 4px; display: inline-block; margin-right: 15px; }
+        
+        .highlight-text { color: #d97706; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="header-banner">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="fw-bold mb-2"><i class="fas fa-book-medical me-3"></i>คู่มือระบบ Control Chart</h1>
+                <p class="mb-0 fs-5 opacity-75">อ้างอิงตามมาตรฐานสถาบันรับรองคุณภาพสถานพยาบาล (HA)</p>
+            </div>
+            <a href="index.html" class="btn-back fw-bold"><i class="fas fa-arrow-left me-2"></i>กลับสู่หน้าหลัก</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card card-custom">
+            <div class="card-header-custom"><i class="fas fa-info-circle me-2"></i>1. ที่มาและวัตถุประสงค์ (Background)</div>
+            <div class="card-body">
+                <p>การบริหารความเสี่ยงและควบคุมการติดเชื้อในโรงพยาบาล (Infection Control) เป็นหัวใจสำคัญของมาตรฐาน <strong>HA (Healthcare Accreditation)</strong> โดยทาง สรพ. สนับสนุนให้สถานพยาบาลนำเครื่องมือทางสถิติมาใช้วิเคราะห์ข้อมูลเพื่อการพัฒนาคุณภาพอย่างต่อเนื่อง (CQI)</p>
+                <p><strong>Control Chart (แผนภูมิควบคุม)</strong> เป็นเครื่องมือที่ช่วยให้ทีมบุคลากรทางการแพทย์สามารถมองเห็น <strong>"แนวโน้ม" (Trend)</strong> และแยกแยะความผิดปกติที่เกิดขึ้นจากการทำงานปกติ (Common cause variation) ออกจากความผิดปกติที่มีสาเหตุพิเศษ (Special cause variation) ได้อย่างชัดเจน ทำให้สามารถเข้าไปแก้ไขปัญหาหรือปรับปรุงระบบงาน (Intervention) ได้อย่างทันท่วงที</p>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header-custom"><i class="fas fa-chart-line me-2"></i>2. องค์ประกอบของ Control Chart</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="chart-legend"><span class="legend-color" style="background: #2196f3; border-top: 2px dashed #2196f3;"></span><strong>เส้นค่าเฉลี่ย (Mean / Center Line):</strong></div>
+                        <p class="text-muted ms-5">คือค่าเฉลี่ยของอัตราการติดเชื้อทั้งหมดในกรอบเวลาที่เลือก แสดงถึงระดับประสิทธิภาพการทำงานที่เป็นอยู่ (Baseline)</p>
+                        
+                        <div class="chart-legend"><span class="legend-color" style="background: #ff9800; border-top: 2px dashed #ff9800;"></span><strong>เส้นเป้าหมาย (Target Line):</strong></div>
+                        <p class="text-muted ms-5">คือเป้าหมายที่โรงพยาบาลหรือระดับประเทศกำหนดไว้ (เช่น อัตรา VAP ต้องไม่เกิน 1.5 ต่อ 1,000 วันคาสาย)</p>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="chart-legend"><span class="legend-color" style="background: #f44336; border-top: 2px dashed #f44336;"></span><strong>เส้นควบคุมขอบบน (UCL - Upper Control Limit):</strong></div>
+                        <p class="text-muted ms-5">ค่าขีดจำกัดสูงสุดทางสถิติ (Mean + 3SD) หากข้อมูลทะลุเส้นนี้ แสดงว่ามีปัจจัยภายนอกแทรกแซงและมีการติดเชื้อสูงผิดปกติ <span class="text-danger fw-bold">(ต้องสอบสวนโรคทันที)</span></p>
+
+                        <div class="chart-legend"><span class="legend-color" style="background: #f44336; border-top: 2px dashed #f44336;"></span><strong>เส้นควบคุมขอบล่าง (LCL - Lower Control Limit):</strong></div>
+                        <p class="text-muted ms-5">ค่าขีดจำกัดต่ำสุดทางสถิติ (Mean - 3SD) หากข้อมูลตกต่ำกว่าเส้นนี้ ถือเป็นแนวโน้มที่ดี แสดงว่าระบบที่ปรับปรุงแก้ไขมีประสิทธิภาพ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header-custom"><i class="fas fa-calculator me-2"></i>3. สูตรการคำนวณตัวชี้วัด (Indicator Formulas)</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="formula-box">
+                            <div class="formula-title">Ventilator-Associated Pneumonia (VAP)</div>
+                            <p class="small text-muted mb-2">อัตราการติดเชื้อปอดอักเสบจากการใช้เครื่องช่วยหายใจ</p>
+                            <div class="formula-math">Rate = (จำนวนเคส VAP / จำนวนวันคาสายเครื่องช่วยหายใจ) × 1,000</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="formula-box" style="border-left-color: #f093fb; background: #fdf5ff;">
+                            <div class="formula-title" style="color: #c026d3;">Catheter-Associated UTI (CA-UTI)</div>
+                            <p class="small text-muted mb-2">อัตราการติดเชื้อทางเดินปัสสาวะจากการคาสายสวน</p>
+                            <div class="formula-math">Rate = (จำนวนเคส CA-UTI / จำนวนวันคาสายสวนปัสสาวะ) × 1,000</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="formula-box" style="border-left-color: #4facfe; background: #f0f9ff;">
+                            <div class="formula-title" style="color: #0284c7;">Catheter-Associated BSI (CA-BSI)</div>
+                            <p class="small text-muted mb-2">อัตราการติดเชื้อในกระแสเลือดจากการคาสายสวนหลอดเลือดดำ</p>
+                            <div class="formula-math">Rate = (จำนวนเคส CA-BSI / จำนวนวันคาสาย C-line) × 1,000</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="formula-box" style="border-left-color: #43e97b; background: #f0fdf4;">
+                            <div class="formula-title" style="color: #15803d;">Surgical Site Infection (SSI)</div>
+                            <p class="small text-muted mb-2">อัตราการติดเชื้อที่ตำแหน่งผ่าตัด</p>
+                            <div class="formula-math">Rate = (จำนวนเคส SSI / จำนวนผู้ป่วยที่ได้รับการผ่าตัด) × 100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-custom">
+            <div class="card-header-custom"><i class="fas fa-search-chart me-2"></i>4. หลักการแปรผลกราฟ (How to Interpret)</div>
+            <div class="card-body">
+                <p>ในการดู Control Chart ให้สังเกตสัญญาณเตือน (Signals) ต่อไปนี้ ซึ่งบ่งบอกว่าระบบงานเริ่มมีความผิดปกติ และทีม ICN / หัวหน้าตึก ควรเข้าดำเนินการวิเคราะห์หาสาเหตุ (RCA):</p>
+                <ul class="list-group list-group-flush mt-3">
+                    <li class="list-group-item py-3"><i class="fas fa-exclamation-triangle text-danger me-3"></i><strong>จุดที่ออกนอกเส้น (Outlier):</strong> มีจุดข้อมูล 1 จุดที่พุ่งเกินเส้น UCL (หมายถึงเดือนนั้นมีการติดเชื้อพุ่งสูงกะทันหันอย่างมีนัยสำคัญ)</li>
+                    <li class="list-group-item py-3"><i class="fas fa-arrow-trend-up text-warning me-3"></i><strong>แนวโน้มต่อเนื่อง (Trend):</strong> มีจุดข้อมูล 6 จุดติดต่อกันที่ชี้ขึ้นอย่างต่อเนื่อง (หมายถึงสถานการณ์กำลังแย่ลงเรื่อยๆ แม้จะยังไม่เกิน UCL ก็ตาม)</li>
+                    <li class="list-group-item py-3"><i class="fas fa-layer-group text-primary me-3"></i><strong>การเกาะกลุ่ม (Shift):</strong> มีจุดข้อมูล 8 จุดติดต่อกันอยู่ "เหนือ" เส้น Mean (หมายถึงระดับการติดเชื้อโดยรวมขยับฐานสูงขึ้น)</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="text-center text-muted mb-4 small">
+        <p>จัดทำและพัฒนาระบบโดย: <strong>วิษณุกรณ์ โอยา (พี่ที)</strong><br>เพื่อสนับสนุนการควบคุมคุณภาพตามมาตรฐาน HA โรงพยาบาล</p>
+    </div>
+
+</body>
+</html>
